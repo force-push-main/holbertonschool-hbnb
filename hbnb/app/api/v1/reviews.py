@@ -37,7 +37,11 @@ class ReviewList(Resource):
         """Register a new review"""
         new_review = facade.create_review(review_data)
         return {
-"text": new_review.text, "rating": new_review.rating}, 201
+                "text": new_review.text, 
+                "rating": new_review.rating,
+                "user_id": new_review.user,
+                "place_id": new_review.place
+                }, 201
 
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
@@ -55,10 +59,10 @@ class ReviewResource(Resource):
         if not review:
             return {"error": "Review not found"}, 400
         return {
-                "text": review['text'],
-                "rating": review["rating"],
-                "user_id": review["user_id"],
-                "place_id": review["place_id"]
+                "text": review.text,
+                "rating": review.rating,
+                "user_id": review.user,
+                "place_id": review.place
                 }, 200
 
     @api.expect(review_model)
@@ -69,17 +73,17 @@ class ReviewResource(Resource):
         review_data = api.payload
 
         # Check review is valid format
-        if (type(review_data['text']) != str or
-                len(review_data['text']) == 0):
+        if (type(review_data.text) != str or
+                len(review_data.text) == 0):
             return {"error": "Invalid input data"}, 400
-        if (type(review_data['rating']) != int or
-                review_data['rating'] > 5 or
-                review_data['rating'] < 1):
+        if (type(review_data.rating) != int or
+                review_data.rating > 5 or
+                review_data.rating < 1):
             return {"error": "Invalid input data"}, 400
 
         # Check user and place exists
-        if (not facade.get_user(review_data['user_id']) or 
-                not facade.get_place(review_data['place_id'])):
+        if (not facade.get_user(review_data.user) or 
+                not facade.get_place(review_data.place)):
             return {"error": "Invalid input data"}, 400
 
         """Update a review's information"""
@@ -87,10 +91,10 @@ class ReviewResource(Resource):
         if not review:
             return {"error": "Review not found"}
         return {
-                "text": review['text'],
-                "rating": review["rating"],
-                "user_id": review["user_id"],
-                "place_id": review["place_id"]
+                "text": review.text,
+                "rating": review.rating,
+                "user_id": review.user,
+                "place_id": review.place
                 }, 200
 
     @api.response(200, 'Review deleted successfully')
