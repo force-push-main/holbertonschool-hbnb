@@ -5,8 +5,8 @@ api = Namespace('reviews', description='Review operations')
 
 # Define the review model for input validation and documentation
 review_model = api.model('Review', {
-    'text': fields.String(required=True, description='Text of the review'),
-    'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
+    'text': fields.String(required=True, description='Text of the review', min_length=1),
+    'rating': fields.Integer(required=True, description='Rating of the place (1-5)', min=1, max=5),
     'user_id': fields.String(required=True, description='ID of the user'),
     'place_id': fields.String(required=True, description='ID of the place')
 })
@@ -20,21 +20,10 @@ class ReviewList(Resource):
         """Register a new review"""
         review_data = api.payload
 
-        # Check review is valid format
-        if (type(review_data['text']) != str or
-                len(review_data['text']) == 0):
-            return {"error": "Invalid input data"}, 400
-        if (type(review_data['rating']) != int or
-                review_data['rating'] > 5 or
-                review_data['rating'] < 1):
+        if (not facade.get_user(review_data["user_id"]) or 
+                not facade.get_place(review_data["place_id"])):
             return {"error": "Invalid input data"}, 400
 
-        # Check user and place exists
-        if (not facade.get_user(review_data['user_id']) or 
-                not facade.get_place(review_data['place_id'])):
-            return {"error": "Invalid input data"}, 400
-        
-        """Register a new review"""
         new_review = facade.create_review(review_data)
         return {
                 "text": new_review.text, 
@@ -72,21 +61,12 @@ class ReviewResource(Resource):
     def put(self, review_id):
         review_data = api.payload
 
-        # Check review is valid format
-        if (type(review_data.text) != str or
-                len(review_data.text) == 0):
-            return {"error": "Invalid input data"}, 400
-        if (type(review_data.rating) != int or
-                review_data.rating > 5 or
-                review_data.rating < 1):
-            return {"error": "Invalid input data"}, 400
-
         # Check user and place exists
-        if (not facade.get_user(review_data.user) or 
-                not facade.get_place(review_data.place)):
+        if (not facade.get_user(review_data["user"]) or 
+                not facade.get_place(review_data["place"])):
             return {"error": "Invalid input data"}, 400
 
-        """Update a review's information"""
+
         review = facade.update_review(review_id, review_data)
         if not review:
             return {"error": "Review not found"}

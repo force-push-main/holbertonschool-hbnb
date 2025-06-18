@@ -20,12 +20,15 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
+    def delete_user(self, user_id):
+        self.user_repo.delete(user_id)
+
     # Placeholder method for fetching a place by ID
     def get_place(self, place_id):
         # Logic will be implemented in later tasks
         pass
 
-    # Review management logic
+    """Review"""
     def create_review(self, review_data):
         review = Review(**review_data)
         self.review_repo.add(review)
