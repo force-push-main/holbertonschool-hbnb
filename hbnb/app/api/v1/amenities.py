@@ -27,6 +27,7 @@ class AmenityList(Resource):
         
         new_amenity = facade.create_amenity(amenity_data)
         return {
+            "id": new_amenity.id,
             "name": new_amenity.name
         }, 201
     
@@ -34,6 +35,7 @@ class AmenityList(Resource):
     def get(self):
         """Retrieve a list of all amenities"""
         amenities = facade.get_all_amenities()
+        return amenities
 
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
@@ -45,6 +47,7 @@ class AmenityResource(Resource):
         if not amenity:
             return {"error": "Amenity not found"}, 400
         return {
+            'id': amenity.id,
             "name": amenity.name
         }, 200
 
