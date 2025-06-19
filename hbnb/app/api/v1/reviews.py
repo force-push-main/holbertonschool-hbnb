@@ -3,6 +3,7 @@ from app.services import facade
 
 api = Namespace('reviews', description='Review operations')
 
+
 # Define the review model for input validation and documentation
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Text of the review', min_length=1),

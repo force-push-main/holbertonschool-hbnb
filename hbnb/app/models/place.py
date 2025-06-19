@@ -4,7 +4,7 @@ from app.models.base import BaseModel
 from app.models.user import User
 
 class Place(BaseModel):
-    def __init__(self, title=None, description=None, price=None, latitude=None, longitude=None, owner=None):
+    def __init__(self, title=None, description=None, price=None, latitude=None, longitude=None, owner=None, amenities=None):
         super().__init__()
 
         self.title = title
@@ -14,7 +14,7 @@ class Place(BaseModel):
         self.longitude = longitude
         self.owner = owner
         self.reviews = []  # List to store related reviews
-        self.amenities = []  # List to store related amenities
+        self.amenities = amenities or [] # List to store related amenities
 
     #Getters & Setters
     # @property
@@ -108,3 +108,4 @@ class Place(BaseModel):
     def place_exists(place_id):
         """ Search through all Places to ensure the specified place_id exists """
         # Unused - the facade get_place method will handle this
+

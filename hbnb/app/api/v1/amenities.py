@@ -1,7 +1,6 @@
-#!/usr/bin/python3
-
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+import re
 
 api = Namespace('amenities', description='Amenity operations')
 
@@ -17,19 +16,16 @@ class AmenityList(Resource):
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new amenity"""
-        amenity_data = api.payload
+        try:
+            amenity_data = api.payload
 
-       # Check amenity is valid format
-        if (type(amenity_data['name']) != str or
-                len(amenity_data['name']) == 0 or 
-                len(amenity_data['name']) > 50):
-            return {"error": "Invalid input data"}, 400
-        
-        new_amenity = facade.create_amenity(amenity_data)
-        return {
-            "id": new_amenity.id,
-            "name": new_amenity.name
-        }, 201
+            new_amenity = facade.create_amenity(amenity_data)
+            return {
+                "id": new_amenity.id,
+                "name": new_amenity.name
+            }, 201
+        except Exception as e:
+            return {"Error": f'{e}'}, 400
     
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
@@ -56,19 +52,17 @@ class AmenityResource(Resource):
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
-        """Update an amenity's information"""
-        amenity_data = api.payload
-
-        #check amenity is valid format
-        if (type(amenity_data.name) != str or
-                len(amenity_data.name) == 0 or
-                len(amenity_data.name) > 50):
-            return {"error": "Invalid input data"}, 400
+        try:
+            """Update an amenity's information"""
+            amenity_data = api.payload
         
-        #check the amenity exists
-        amenity = facade.update_amenity(amenity_id, amenity_data)
-        if not amenity:
-            return {"error": "Amenity not found"}, 404
-        return {
-            "name": amenity.name
-        }, 200
+            #check the amenity exists
+            amenity = facade.update_amenity(amenity_id, amenity_data)
+            if not amenity:
+                return {"error": "Amenity not found"}, 404
+            return {
+                "id": amenity.id,
+                "name": amenity.name
+            }, 200
+        except Exception as e:
+            return {"error": f"{e}"}, 400

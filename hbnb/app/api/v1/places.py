@@ -36,41 +36,13 @@ class PlaceList(Resource):
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
-        place_data = api.payload
-
-        #check format + up to 100 characters length
-        if (type (place_data['title']) != str or
-                len(place_data['title']) == 0 or
-                len(place_data['title']) > 100):
-            return {"error": "Invalid input data"}, 400
-        
-        #check price format and value
-        if (type (place_data['price']) != float or 
-                place_data['price'] < 0.0):
-            return {"error": "Invalid input data"}, 400
-        
-        #check latitude format + value
-        if (type (place_data['latitude']) != float or
-                place_data['latitude'] < -90.0 or
-                place_data['latitude'] > 90.0):
-            return {"error": "Invalid input data"}, 400
-        
-        #check longitude format + value
-        if (type (place_data['longitude']) != float or
-                place_data['longitude'] < -180.0 or
-                place_data['longitude'] > 180.0):
-            return {"error": "Invalid input data"}, 400
-        
-        new_place = facade.create_place(place_data)
-        return {
-            "title": new_place.title,
-            "description": new_place.description,
-            "price": new_place.price,
-            "latitude": new_place.latitude,
-            "longitude": new_place.longitude,
-            "owner_id": new_place.owner_id,
-            "amenities": new_place.amenities
-        }
+        try:
+            place_data = api.payload
+            place = facade.create_place(place_data)
+            return place
+        except Exception as e:
+            import traceback
+            return {"error": str(e), "traceback": traceback.format_exc()}, 400
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
@@ -102,45 +74,21 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
-        place_data = api.payload
-
-        #check format + up to 100 characters length
-        if (type (place_data['title']) != str or
-                len(place_data['title']) == 0 or
-                len(place_data['title']) > 100):
-            return {"error": "Invalid input data"}, 400
-        
-        #check price format and value
-        if (type (place_data['price']) != float or 
-                place_data['price'] < 0.0):
-            return {"error": "Invalid input data"}, 400
-        
-        #check latitude format + value
-        if (type (place_data['latitude']) != float or
-                place_data['latitude'] < -90.0 or
-                place_data['latitude'] > 90.0):
-            return {"error": "Invalid input data"}, 400
-        
-        #check longitude format + value
-        if (type (place_data['longitude']) != float or
-                place_data['longitude'] < -180.0 or
-                place_data['longitude'] > 180.0):
-            return {"error": "Invalid input data"}, 400
-        
         """Update a place's information"""
-        place = facade.update_place(place_id, place_data)
-        if not place:
-            return {"error": "Place not found"}, 404
-        return {
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner_id,
-            "amenities": place.amenities
-        }
+        try:
+            place_data = api.payload
 
-        
-
-        
+            place = facade.update_place(place_id, place_data)
+            if not place:
+                return {"error": "Place not found"}, 404
+            return {
+                "title": place.title,
+                "description": place.description,
+                "price": place.price,
+                "latitude": place.latitude,
+                "longitude": place.longitude,
+                "owner_id": place.owner_id,
+                "amenities": place.amenities
+            }
+        except Exception as e:
+            return {"error": f"{e}"}
