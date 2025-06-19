@@ -227,7 +227,19 @@ class HBnBFacade:
 
 
     """Review"""
+
+    """create review must add user obj and place obj to review obj, not just their IDs"""
     def create_review(self, review_data):
+        if not review_data['text']:
+            raise ValueError("Review must contain text")
+        if not review_data['rating']:
+            raise ValueError("Review must contain rating")
+        owner = self.get_user(review_data["user_id"])
+        place = self.get_place(review_data["place_id"])
+        if not owner:
+            raise ValueError("Review must be from a valid user")
+        if not place:
+            raise ValueError("Review must be for a valid place")
         review = Review(**review_data)
         self.review_repo.add(review)
         return review
@@ -238,10 +250,19 @@ class HBnBFacade:
     def get_all_reviews(self):
         return self.review_repo.get_all()
 
+    """This doesn't work right"""
     def get_reviews_by_place(self, place_id):
         return self.review_repo.get_by_attribute('place_id', place_id)
 
     def update_review(self, review_id, review_data):
+        if not self.review_repo.get_by_attribute(review_id, review_data):
+            raise ValueError("Review does not exist")
+        if 'text' in review_data:
+            if not review_data['text']:
+                raise ValueError("Review must contain text")
+        if 'rating' in review_data:
+            if not review_data['rating']:
+                raise ValueError("Review must contain rating")
         self.review_repo.update(review_id, review_data)
         return self.review_repo.get(review_id)
 

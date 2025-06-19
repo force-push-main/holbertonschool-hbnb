@@ -10,30 +10,6 @@ class Review(BaseModel):
         self.user = user_id
 
     # @property
-    # def text(self):
-    #     return self.text
-    
-    # @text.setter
-    # def text(self, value):
-    #     if not value:
-    #         raise ValueError("Review must contain text")
-    #     if type(value) != str:
-    #         raise TypeError("Review must be a string")
-    #     self.text = value
-
-    # @property
-    # def rating(self):
-    #     return self.rating
-    
-    # @rating.setter
-    # def rating(self, value):
-    #     if type(value) != int:
-    #         raise TypeError("Rating must be an int")
-    #     if value < 1 or value > 5:
-    #         raise ValueError("Rating must be a value between 1 and 5")
-    #     self.rating = value
-
-    # @property
     # def place(self):
     #     return self.place
 
@@ -43,6 +19,9 @@ class Review(BaseModel):
     #         raise TypeError("Property must be a property object")
     #     if not InMemoryRepository.get(obj.id):
     #         raise NameError("Property not found")
+
+# review object is attached to a place object by place id, review can only have one place
+# should check whether place object exists before attaching review to place
 
     # @property
     # def user(self):
