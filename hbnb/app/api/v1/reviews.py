@@ -24,7 +24,8 @@ class ReviewList(Resource):
             new_review = facade.create_review(review_data)
             return new_review, 201
         except Exception as e:
-            return {"error": f"{e}"}, 400
+            import traceback
+            return {"error": str(e), "traceback": traceback.format_exc()}, 400
 
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):

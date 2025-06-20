@@ -1,6 +1,5 @@
 import unittest
 from app import create_app
-import json
 
 class TestUserEndpoints(unittest.TestCase):
 

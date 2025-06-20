@@ -27,7 +27,7 @@ class TestPlacesEndpoint(unittest.TestCase):
         new_user = json.loads(create_new_user.get_data(as_text=True))
         self.test_place_data['owner_id'] = new_user['id']
         response = self.client.post('/api/v1/places/', json=self.test_place_data)
-        returned_data = json.loads(response.get_data(as_text=True)) 
+        returned_data = json.loads(response.get_data(as_text=True))
         self.test_place_data = returned_data
         self.assertEqual(response.status_code, 201)
 

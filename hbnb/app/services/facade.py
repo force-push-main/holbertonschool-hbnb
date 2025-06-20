@@ -254,8 +254,8 @@ class HBnBFacade:
             raise ValueError("Review must contain text")
         if not review_data['rating']:
             raise ValueError("Review must contain rating")
-        owner = self.get_user(review_data["user_id"])
-        place = self.get_place(review_data["place_id"])
+        owner = self.user_repo.get(review_data["user_id"])
+        place = self.place_repo.get(review_data["place_id"])
         if not owner:
             raise ValueError("Review must be from a valid user")
         if not place:
