@@ -35,6 +35,4 @@ class TestReviewsEndpoint(unittest.TestCase):
             "place_id": place['id']
         }
         response = self.client.post('/api/v1/reviews/', json=new_review)
-        response_data = json.loads(response.get_data(as_text=True))
-        print(response_data)
         self.assertEqual(response.status_code, 201)
