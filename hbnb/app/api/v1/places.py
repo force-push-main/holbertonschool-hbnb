@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 
@@ -39,7 +37,7 @@ class PlaceList(Resource):
         try:
             place_data = api.payload
             place = facade.create_place(place_data)
-            return place
+            return place, 201
         except Exception as e:
             import traceback
             return {"error": str(e), "traceback": traceback.format_exc()}, 400
@@ -56,18 +54,12 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
-        place = facade.get_place(place_id)
-        if not place:
-            return {"error": "Place not found"}, 404
-        return {
-            "title": place.title,
-            "description": place.description,
-            "price": place.price,
-            "latitude": place.latitude,
-            "longitude": place.longitude,
-            "owner_id": place.owner_id,
-            "amenities": place.amenities
-        }
+        try:
+            place = facade.get_place(place_id)
+            if not place:
+                return {"error": "Place not found"}, 404
+        except Exception as e:
+            return {'error': f'{e}'}, 404
 
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
@@ -77,18 +69,10 @@ class PlaceResource(Resource):
         """Update a place's information"""
         try:
             place_data = api.payload
-
             place = facade.update_place(place_id, place_data)
-            if not place:
-                return {"error": "Place not found"}, 404
-            return {
-                "title": place.title,
-                "description": place.description,
-                "price": place.price,
-                "latitude": place.latitude,
-                "longitude": place.longitude,
-                "owner_id": place.owner_id,
-                "amenities": place.amenities
-            }
+            return place
+
+        except KeyError as e:
+            return {'error': f'{e}'}, 404
         except Exception as e:
-            return {"error": f"{e}"}
+            return {"error": f"{e}"}, 400

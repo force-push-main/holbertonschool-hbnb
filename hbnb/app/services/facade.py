@@ -129,6 +129,7 @@ class HBnBFacade:
         self.place_repo.add(place)
 
         new_place_dict = {
+            "id": place.id,
             "title": place.title,
             "description": place.description,
             "price": place.price,
@@ -140,16 +141,37 @@ class HBnBFacade:
         return new_place_dict
 
     def get_place(self, place_id):
-        return self.place_repo.get(place_id)
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+        return {
+            "title": place.title,
+            "description": place.description,
+            "price": place.price,
+            "latitude": place.latitude,
+            "longitude": place.longitude,
+            "owner_id": place.owner.__dict__,
+            "amenities": [amenity.__dict__ for amenity in place.amenities]
+            }
 
     def get_all_places(self):
-        return self.place_repo.get_all()
+        places = self.place_repo.get_all()
+        places_list = []
+        for place in places:
+            place_obj = {
+                "id": place.id,
+                "title": place.title,
+                "latitude": place.latitude,
+                "longitude": place.longitude,
+            }
+            places_list.append(place_obj)
+        return places_list
     
     def update_place(self, place_id, place_data):
 
         place = self.place_repo.get_by_attribute('id', place_data['place_id'])
         if not place:
-            return {"error": "Place not found"}, 404
+            raise KeyError("Place not found")
 
         #check format + up to 100 characters length
         if 'title' in place_data:
@@ -183,52 +205,50 @@ class HBnBFacade:
                     place_data['longitude'] > 180.0):
                 raise ValueError("Place must have a longitude")
 
-        """need to add check on whether owner has changed, and if so 
-        then go through same process as above of adding an owner instance to the place object
-        rather than just the owner id"""
-
         place_obj = dict(place_data)
+        """no matter outcome of next checks, place_obj shouldn't have a field for owner_id or amenities 
+        because Place takes class objects, not strings for these fields, and pop safely removes key-values 
+        without throwing errors if the key doesn't exist"""
+        place_obj.pop('owner_id')
+        place_obj.pop('amenities')
 
+        if 'owner_id' in place_data:
+            if not place_data['owner_id']:
+                raise ValueError("Place must have an owner")
+            new_owner = self.user_repo.get_by_attribute('id', place_data["owner_id"])
+            if not new_owner:
+                raise ValueError("Place must have a valid owner")
+            curr_owner_id = place.owner.id
+            if new_owner.id != curr_owner_id:
+                place_obj['owner'] = new_owner
 
-        # if 'owner_id' in place_data:
-        #     if not place_data['owner_id']:
-        #         raise ValueError("Place must have an owner")
-        #     owner = self.user_repo.get_by_attribute('id', place_data["owner_id"])
-        #     if not owner:
-        #         raise ValueError("Place must have a valid owner")
-        #     
-        #     if place_data['owner_id'] == owner.id:
-        #         place_obj.pop('owner_id')
-        #     else:
-        #         place_obj['owner'] = owner
+        if 'amenities' in place_data:
+            amenities_list = []
 
-        """Also need to check whether the amenities have changed, and if so
-        then go through same process as above of checking if amenities already exist, and
-        either adding existing amenities objects to dict, or else creating new amenities objects
-        and adding to dict
-        should be easy enough :')"""
+            for amenity_name in place_data["amenities"]:
+                clean_name = re.sub(r'[^a-z]', '', amenity_name.lower())
+                existing_amenity = next((amenity for amenity in self.amenity_repo._storage.values() if 
+                re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
+                if not existing_amenity:
+                    existing_amenity = self.create_amenity({"name": amenity_name})
+                amenities_list.append(existing_amenity)
+            place_obj['amenities'] = amenities_list
 
-        # if 'amenities' in place_data:
-        #     place_obj.pop('amenities')
-
-        # amenities_list = []
-
-        # for amenity_name in place_data["amenities"]:
-        #     clean_name = re.sub(r'[^a-z]', '', amenity_name.lower())
-        #     existing_amenity = next((amenity for amenity in self.amenity_repo._storage.values() if 
-        #     re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
-        #     if not existing_amenity:
-        #         existing_amenity = self.create_amenity({"name": amenity_name})
-        #     amenities_list.append(existing_amenity)
-        # place_obj['amenities'] = amenities_list
-
-        self.place_repo.update(place_id, place_data)
-        return self.place_repo.get(place_id)
-
+        self.place_repo.update(place_id, place_obj)
+        updated_place = self.place_repo.get(place_id)
+        new_place_dict = {
+            "title": updated_place.title,
+            "description": updated_place.description,
+            "price": updated_place.price,
+            "latitude": updated_place.latitude,
+            "longitude": updated_place.longitude,
+            "owner_id": updated_place.owner.id,
+            "amenities": [amenity.name for amenity in updated_place.amenities]
+        }
+        return new_place_dict
 
     """Review"""
 
-    """create review must add user obj and place obj to review obj, not just their IDs"""
     def create_review(self, review_data):
         if not review_data['text']:
             raise ValueError("Review must contain text")
@@ -240,22 +260,49 @@ class HBnBFacade:
             raise ValueError("Review must be from a valid user")
         if not place:
             raise ValueError("Review must be for a valid place")
-        review = Review(**review_data)
+        review_obj = {
+            "text": review_data['text'],
+            "rating": review_data['rating'],
+            "user": owner,
+            "place": place
+        }
+        review = Review(**review_obj)
         self.review_repo.add(review)
-        return review
+        place.add_review(review)
+        new_review_dict = {
+            "text": review.text,
+            "rating": review.rating,
+            "user_id": review.user.id,
+            "place_id": review.place.id
+        }
+        return new_review_dict
 
     def get_review(self, review_id):
-        return self.review_repo.get(review_id)
+        review = self.review_repo.get(review_id)
+        if not review:
+            raise ValueError("Review not found")
+        new_review_dict = {
+            "text": review.text,
+            "rating": review.rating,
+            "user_id": review.user.id,
+            "place_id": review.place.id
+        }
+        return new_review_dict
 
     def get_all_reviews(self):
         return self.review_repo.get_all()
 
-    """This doesn't work right"""
     def get_reviews_by_place(self, place_id):
-        return self.review_repo.get_by_attribute('place_id', place_id)
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+        reviews = []
+        for review in place.reviews:
+            reviews.append(review.__dict__)
+        return reviews
 
     def update_review(self, review_id, review_data):
-        if not self.review_repo.get_by_attribute(review_id, review_data):
+        if not self.review_repo.get(review_id):
             raise ValueError("Review does not exist")
         if 'text' in review_data:
             if not review_data['text']:
@@ -264,8 +311,14 @@ class HBnBFacade:
             if not review_data['rating']:
                 raise ValueError("Review must contain rating")
         self.review_repo.update(review_id, review_data)
-        return self.review_repo.get(review_id)
+        new_review = self.review_repo.get(review_id)
+        new_review_dict = {
+            "text": new_review.text,
+            "rating": new_review.rating
+        }
+        return new_review_dict
 
     def delete_review(self, review_id):
+        if not self.review_repo.get(review_id):
+            raise ValueError("Review not found")
         self.review_repo.delete(review_id)
-        return review_id
