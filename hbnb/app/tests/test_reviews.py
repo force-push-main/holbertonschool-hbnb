@@ -36,3 +36,5 @@ class TestReviewsEndpoint(unittest.TestCase):
         }
         response = self.client.post('/api/v1/reviews/', json=new_review)
         self.assertEqual(response.status_code, 201)
+
+# python3 -m unittest app/tests/test_places.py

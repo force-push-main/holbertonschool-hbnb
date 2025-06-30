@@ -44,14 +44,4 @@ class TestPlacesEndpoint(unittest.TestCase):
         response = self.client.post('/api/v1/places/', json=test_place_data)
         self.assertEqual(response.status_code, 400)
 
-    # def test_update_place(self):
-    #     updated_data = {
-    #         "title": "new title"
-    #     }
-    #     print(self.test_place_data['id'])
-        # url = "/api/v1/places/" + self.test_place_data['id']
-        # response = self.client.post(url, json=updated_data)
-        # returned_data = json.loads(response.get_data(as_text=True)) 
-        # print(returned_data)
-        # self.assertEqual(response.status_code, 201)
 

@@ -39,8 +39,7 @@ class PlaceList(Resource):
             place = facade.create_place(place_data)
             return place, 201
         except Exception as e:
-            import traceback
-            return {"error": str(e), "traceback": traceback.format_exc()}, 400
+            return {"error": f'{e}'}, 400
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):

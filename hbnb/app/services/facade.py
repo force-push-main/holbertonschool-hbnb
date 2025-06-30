@@ -1,4 +1,5 @@
 from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -66,7 +67,7 @@ class HBnBFacade:
                 "name": instance.name
             }
             json_data.append(response)
-        
+
         return json_data
 
     def update_amenity(self, amenity_id, amenity_data):
@@ -81,27 +82,27 @@ class HBnBFacade:
                 len(place_data['title']) == 0 or
                 len(place_data['title']) > 100):
             raise ValueError("Place must have a title")
-        
+
         if not place_data['description']:
             raise ValueError("Place must have a description")
-        
+
         #check price format and value
         if (type (place_data['price']) != float or 
                 place_data['price'] < 0.0):
             raise ValueError("Place must have a price")
-        
+
         #check latitude format + value
         if (type (place_data['latitude']) != float or
                 place_data['latitude'] < -90.0 or
                 place_data['latitude'] > 90.0):
             raise ValueError("Place must have a latitude")
-        
+
         #check longitude format + value
         if (type (place_data['longitude']) != float or
                 place_data['longitude'] < -180.0 or
                 place_data['longitude'] > 180.0):
             raise ValueError("Place must have a longitude")
-        
+
         if not place_data['owner_id']:
             raise ValueError("Place must have an owner")
 
@@ -166,7 +167,7 @@ class HBnBFacade:
             }
             places_list.append(place_obj)
         return places_list
-    
+
     def update_place(self, place_id, place_data):
 
         place = self.place_repo.get_by_attribute('id', place_data['place_id'])
