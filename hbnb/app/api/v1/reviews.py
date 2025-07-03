@@ -15,8 +15,6 @@ review_model = api.model('Review', {
 @api.route('/')
 class ReviewList(Resource):
     @api.expect(review_model, validate=True)
-    @api.response(201, 'Review successfully created')
-    @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new review"""
         try:
@@ -35,8 +33,6 @@ class ReviewList(Resource):
 
 @api.route('/<review_id>')
 class ReviewResource(Resource):
-    @api.response(200, 'Review details retrieved successfully')
-    @api.response(404, 'Review not found')
     def get(self, review_id):
         """Get review details by ID"""
         try:
@@ -46,9 +42,6 @@ class ReviewResource(Resource):
             return {'error': f'{e}'}, 404
 
     @api.expect(review_model)
-    @api.response(200, 'Review updated successfully')
-    @api.response(404, 'Review not found')
-    @api.response(400, 'Invalid input data')
     def put(self, review_id):
         try:
             review_data = api.payload
@@ -58,8 +51,6 @@ class ReviewResource(Resource):
         except Exception as e:
             return {'error': f"{e}"}, 400
 
-    @api.response(200, 'Review deleted successfully')
-    @api.response(404, 'Review not found')
     def delete(self, review_id):
         """Delete a review"""
         try:
@@ -70,8 +61,6 @@ class ReviewResource(Resource):
 
 @api.route('/places/<place_id>/reviews')
 class PlaceReviewList(Resource):
-    @api.response(200, 'List of reviews for the place retrieved successfully')
-    @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all reviews for a specific place"""
         try:

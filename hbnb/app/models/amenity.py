@@ -1,9 +1,10 @@
-#!/usr/bin/python3
-
 from app.models.base import BaseModel
+from sqlalchemy.orm import relationship
+from app.persistence.repository import db
 
 class Amenity(BaseModel):
-    def __init__(self, name=None):
-        super().__init__()
+    __tablename__ = 'amenities'
 
-        self.name = name
+    name = db.Column(db.String(50), nullable=False)
+
+    places = relationship("Place", secondary="place_amenity", back_populates="amenities")

@@ -13,9 +13,6 @@ user_model = api.model('User', {
 @api.route('/')
 class UserList(Resource):
     @api.expect(user_model, validate=True)
-    @api.response(201, 'User successfully created')
-    @api.response(400, 'Email already registered')
-    @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new user"""
         try:
@@ -27,8 +24,6 @@ class UserList(Resource):
 
 @api.route('/<user_id>')
 class UserResource(Resource):
-    @api.response(200, 'User details retrieved successfully')
-    @api.response(404, 'User not found')
     def get(self, user_id):
         """Get user details by ID"""
         user = facade.get_user(user_id)

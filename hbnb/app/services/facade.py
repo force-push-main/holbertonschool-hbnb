@@ -87,7 +87,7 @@ class HBnBFacade:
             raise ValueError("Place must have a description")
 
         #check price format and value
-        if (type (place_data['price']) != float or 
+        if (type(place_data['price']) != float or 
                 place_data['price'] < 0.0):
             raise ValueError("Place must have a price")
 
@@ -136,7 +136,7 @@ class HBnBFacade:
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "owner_id": place.owner.id,
+            "user_id": place.owner.id,
             "amenities": [amenity.name for amenity in place.amenities]
         }
         return new_place_dict
@@ -255,25 +255,24 @@ class HBnBFacade:
             raise ValueError("Review must contain text")
         if not review_data['rating']:
             raise ValueError("Review must contain rating")
-        owner = self.user_repo.get(review_data["user_id"])
+        user = self.user_repo.get(review_data["user_id"])
         place = self.place_repo.get(review_data["place_id"])
-        if not owner:
+        if not user:
             raise ValueError("Review must be from a valid user")
         if not place:
             raise ValueError("Review must be for a valid place")
         review_obj = {
             "text": review_data['text'],
             "rating": review_data['rating'],
-            "user": owner,
+            "author": user,
             "place": place
         }
         review = Review(**review_obj)
         self.review_repo.add(review)
-        place.add_review(review)
         new_review_dict = {
             "text": review.text,
             "rating": review.rating,
-            "user_id": review.user.id,
+            "user_id": review.author.id,
             "place_id": review.place.id
         }
         return new_review_dict

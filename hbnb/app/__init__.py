@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_restx import Api
 """made a slight change to import config at the top instead of when declaring a default arg like the instructions say"""
 from config import DevelopmentConfig 
