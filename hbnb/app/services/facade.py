@@ -154,8 +154,8 @@ class HBnBFacade:
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "owner_id": place.owner.__dict__,
-            "amenities": [amenity.__dict__ for amenity in place.amenities]
+            # "owner_id": place.owner.__dict__,
+            # "amenities": [amenity.__dict__ for amenity in place.amenities]
             }
 
     def get_all_places(self):
@@ -243,8 +243,8 @@ class HBnBFacade:
             "price": updated_place.price,
             "latitude": updated_place.latitude,
             "longitude": updated_place.longitude,
-            "owner_id": updated_place.owner.id,
-            "amenities": [amenity.name for amenity in updated_place.amenities]
+            "owner_id": updated_place.owner.id
+            # "amenities": [amenity.name for amenity in updated_place.amenities]
         }
         return new_place_dict
 
