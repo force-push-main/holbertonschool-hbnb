@@ -154,8 +154,8 @@ class HBnBFacade:
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            # "owner_id": place.owner.__dict__,
-            # "amenities": [amenity.__dict__ for amenity in place.amenities]
+            "owner_id": place.owner.id,
+            "amenities": [amenity.name for amenity in place.amenities]
             }
 
     def get_all_places(self):
@@ -173,7 +173,7 @@ class HBnBFacade:
 
     def update_place(self, place_id, place_data):
 
-        place = self.place_repo.get_by_attribute('id', place_data['place_id'])
+        place = self.place_repo.get(place_id)
         if not place:
             raise KeyError("Place not found")
 
@@ -219,7 +219,7 @@ class HBnBFacade:
         if 'owner_id' in place_data:
             if not place_data['owner_id']:
                 raise ValueError("Place must have an owner")
-            new_owner = self.user_repo.get_by_attribute('id', place_data["owner_id"])
+            new_owner = self.user_repo.get(place_data["owner_id"])
             if not new_owner:
                 raise ValueError("Place must have a valid owner")
             curr_owner_id = place.owner.id
@@ -242,8 +242,8 @@ class HBnBFacade:
             "description": updated_place.description,
             "price": updated_place.price,
             "latitude": updated_place.latitude,
-            "longitude": updated_place.longitude,
-            "owner_id": updated_place.owner.id
+            "longitude": updated_place.longitude
+            # "owner_id": updated_place.owner.id
             # "amenities": [amenity.name for amenity in updated_place.amenities]
         }
         return new_place_dict
