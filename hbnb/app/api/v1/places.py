@@ -68,3 +68,13 @@ class PlaceResource(Resource):
             return {'error': f'{e}'}, 404
         except Exception as e:
             return {"error": f"{e}"}, 400
+
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        try:
+            all_reviews = facade.get_reviews_by_place(place_id)
+            return all_reviews, 200
+        except Exception as e:
+            return {'error': f"{e}"}, 404

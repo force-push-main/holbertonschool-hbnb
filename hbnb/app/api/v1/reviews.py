@@ -58,12 +58,3 @@ class ReviewResource(Resource):
             return "Review deleted successfully", 200
         except Exception as e:
             return {'error': f'{e}'}, 404
-
-@api.route('/places/<place_id>/reviews')
-class PlaceReviewList(Resource):
-    def get(self, place_id):
-        """Get all reviews for a specific place"""
-        try:
-            return facade.get_reviews_by_place(place_id), 200
-        except Exception as e:
-            return {'error': f"{e}"}, 404
