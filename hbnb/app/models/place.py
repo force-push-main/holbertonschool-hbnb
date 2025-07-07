@@ -1,25 +1,27 @@
 #!/usr/bin/python3
 
 from app.models.base import BaseModel
-from app.models.user import User
+from sqlalchemy.orm import relationship
+from app.persistence.repository import db
 
 class Place(BaseModel):
-    def __init__(self, title=None, description=None, price=None, latitude=None, longitude=None, owner=None, amenities=None):
-        super().__init__()
+    __tablename__ = 'places'
 
-        self.title = title
-        self.description = description
-        self.price = price
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner = owner
-        self.reviews = []  # List to store related reviews
-        self.amenities = amenities or [] # List to store related amenities
-        self.reviews = []
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(256), nullable=False)
+    price = db.Column(db.Float)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
-    def add_amenities(self, item):
-        self.amenities.append(item)
+    owner = relationship('User', back_populates='places', lazy=True)
+    reviews = relationship("Review", back_populates="place", lazy=True)
+    amenities = relationship("Amenity", secondary="place_amenity", back_populates="places", lazy=True)
 
-    def add_review(self, item):
-        self.reviews.append(item)
 
+# Many-to-Many junction table
+class PlaceAmenity(BaseModel):
+    __tablename__ = 'place_amenity'
+
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), primary_key=True)
+    amenity_id = db.Column(db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
