@@ -165,8 +165,12 @@ class HBnBFacade:
             place_obj = {
                 "id": place.id,
                 "title": place.title,
+                "description": place.description,
+                "price": place.price,
                 "latitude": place.latitude,
                 "longitude": place.longitude,
+                "owner_id": place.owner.id,
+                "amenities": [amenity.name for amenity in place.amenities]
             }
             places_list.append(place_obj)
         return places_list
@@ -238,13 +242,14 @@ class HBnBFacade:
         self.place_repo.update(place_id, place_obj)
         updated_place = self.place_repo.get(place_id)
         new_place_dict = {
+            "id": updated_place.id,
             "title": updated_place.title,
             "description": updated_place.description,
             "price": updated_place.price,
             "latitude": updated_place.latitude,
-            "longitude": updated_place.longitude
-            # "owner_id": updated_place.owner.id
-            # "amenities": [amenity.name for amenity in updated_place.amenities]
+            "longitude": updated_place.longitude,
+            "owner_id": updated_place.owner.id,
+            "amenities": [amenity.name for amenity in updated_place.amenities]
         }
         return new_place_dict
 
@@ -333,8 +338,11 @@ class HBnBFacade:
         self.review_repo.update(review_id, review_data)
         new_review = self.review_repo.get(review_id)
         new_review_dict = {
+            "id": new_review.id,
             "text": new_review.text,
-            "rating": new_review.rating
+            "rating": new_review.rating,
+            "user_id": new_review.user_id,
+            "place_id": new_review.place_id
         }
         return new_review_dict
 
