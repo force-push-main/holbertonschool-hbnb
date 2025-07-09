@@ -214,9 +214,6 @@ class HBnBFacade:
                 raise ValueError("Place must have a longitude")
 
         place_obj = dict(place_data)
-        """no matter outcome of next checks, place_obj shouldn't have a field for owner_id or amenities 
-        because Place takes class objects, not strings for these fields, and pop safely removes key-values 
-        without throwing errors if the key doesn't exist"""
         place_obj.pop('owner_id')
         place_obj.pop('amenities')
 
