@@ -36,6 +36,8 @@ class HBnBFacade:
         return self.user_repo.get_by_attribute('email', email)
 
     def delete_user(self, user_id):
+        # if not self.user_repo.get(user_id):
+        #     raise ValueError("User doesn't exist")
         self.user_repo.delete(user_id)
 
     """Amenity"""

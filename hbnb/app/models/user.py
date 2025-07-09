@@ -10,5 +10,5 @@ class User(BaseModel):
     email = db.Column(db.String(120), nullable=False, unique=True)
     is_admin = db.Column(db.Boolean, default=False)
 
-    places = relationship('Place', back_populates='owner', lazy=True)
-    reviews = relationship("Review", back_populates="author", lazy=True)
+    places = relationship('Place', back_populates='owner', lazy=True, cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="author", lazy=True, cascade="all, delete-orphan")

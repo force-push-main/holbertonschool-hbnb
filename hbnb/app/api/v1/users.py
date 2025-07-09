@@ -30,3 +30,11 @@ class UserResource(Resource):
         if not user:
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+    
+    def delete(self, user_id):
+        """Delete a review"""
+        try:
+            facade.delete_user(user_id)
+            return "Review deleted successfully", 200
+        except Exception as e:
+            return {'error': f'{e}'}, 404
