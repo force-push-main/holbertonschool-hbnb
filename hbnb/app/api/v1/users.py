@@ -35,6 +35,6 @@ class UserResource(Resource):
         """Delete a review"""
         try:
             facade.delete_user(user_id)
-            return "Review deleted successfully", 200
+            return "User deleted successfully", 200
         except Exception as e:
             return {'error': f'{e}'}, 404

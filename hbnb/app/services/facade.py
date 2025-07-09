@@ -291,7 +291,7 @@ class HBnBFacade:
         new_review_dict = {
             "text": review.text,
             "rating": review.rating,
-            "user_id": review.user.id,
+            "author_id": review.author.id,
             "place_id": review.place.id
         }
         return new_review_dict
