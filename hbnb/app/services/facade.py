@@ -36,8 +36,8 @@ class HBnBFacade:
         return self.user_repo.get_by_attribute('email', email)
 
     def delete_user(self, user_id):
-        # if not self.user_repo.get(user_id):
-        #     raise ValueError("User doesn't exist")
+        if not self.user_repo.get(user_id):
+            raise ValueError("User doesn't exist")
         self.user_repo.delete(user_id)
 
     """Amenity"""
@@ -48,7 +48,7 @@ class HBnBFacade:
                  re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
         return existing_amenity
 
-    def create_amenity(self, amenity_data):
+    def reate_amencity(self, amenity_data):
         if not amenity_data['name']:
             raise ValueError("Amenity name cannot be blank")
 
@@ -265,6 +265,8 @@ class HBnBFacade:
             raise ValueError("Review must be from a valid user")
         if not place:
             raise ValueError("Review must be for a valid place")
+        if place.owner.id == review_data['user_id']:
+            raise ValueError("User can't leave reviews of own place")
         review_obj = {
             "text": review_data['text'],
             "rating": review_data['rating'],
