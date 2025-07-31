@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restx import Api
+from flask_cors import CORS
 from config import DevelopmentConfig 
 from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
@@ -9,6 +10,7 @@ from app.persistence.repository import db
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_class)
     api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API', doc='/api/v1/')
     db.init_app(app)
