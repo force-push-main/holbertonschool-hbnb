@@ -1,19 +1,32 @@
 import cBB from "./assets/country_bounding_boxes.json" with {type: 'json'};
+
+let placeData = [];
+let lastFetchTime;
+const maxAgeMs = 300000;
+
 const imgPaths = [];
-const startingImgId = 0
-const endingImgId = 18
+const startingImgId = 0;
+const endingImgId = 18;
 for (let i = 0; i <= endingImgId; i++) {
     imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
 }
 
 const fetchData = async (url) => {
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw new Error(`An error occured with status code: ${res.status}`);
+    if (typeof lastFetchTime == 'undefined' || Date.now() - lastFetchTime > maxAgeMs) {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(
+                    `An error occured with status code: ${res.status}`
+                );
+            }
+            const data = await res.json();
+            placeData = data;
+            lastFetchTime = Date.now()
     }
-    const data = await res.json();
-    return data;
+    return placeData;
 };
+
+
 
 // ----------- POPULATION ACTIONS AND PROPERTY TILES --------
 
@@ -44,7 +57,9 @@ const getRndImgs = () => {
     const srcArr = [];
     const currImgs = [];
     while (srcArr.length < 3) {
-        const rndIndex = Math.floor(Math.random() * (endingImgId - startingImgId + 1) + startingImgId);
+        const rndIndex = Math.floor(
+            Math.random() * (endingImgId - startingImgId + 1) + startingImgId
+        );
         if (!currImgs.includes(rndIndex)) {
             srcArr.push(imgPaths[rndIndex]);
             currImgs.push(rndIndex);
@@ -115,8 +130,6 @@ const populatePage = (places) => {
         addImgToTile(tile);
     });
 };
-
-
 
 // ------------ SEARCH BAR EVENTS ----------------
 
@@ -201,8 +214,6 @@ const handleAutoComplete = () => {
 
 searchBar.addEventListener("input", handleAutoComplete);
 
-
-
 // ---------- FILTERS ------------
 
 // ----- price slider -----
@@ -272,7 +283,4 @@ const handleSortByPrice = () => {
 
 sortByPriceSelector.addEventListener("input", handleSortByPrice);
 
-
-
 // ------------ PAGINATION ---------------
-
