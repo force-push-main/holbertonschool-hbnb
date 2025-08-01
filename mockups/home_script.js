@@ -1,27 +1,10 @@
 import cBB from "./assets/country_bounding_boxes.json" with {type: 'json'};
-
-const testPlace = [
-    {
-        id: "d98555ab-e9c0-493c-9015-b80b5d7e13fd",
-        title: "Cozy Apartment",
-        description: "A nice place to stay",
-        price: 70,
-        latitude: 153.56,
-        longitude: -10.68,
-        user_id: "f247995d-7b5a-44e8-ab64-a8442a66f422",
-        amenities: ["Kitchen", "Wifi", "pool"],
-    },
-    {
-        id: "d98555ab-e9c0-493c-9015-b80b5d7e13fd",
-        title: "An uncomfortable apartment",
-        description: "A terrible place to stay",
-        price: 180,
-        latitude: 153.56,
-        longitude: -10.68,
-        user_id: "f247995d-7b5a-44e8-ab64-a8442a66f422",
-        amenities: ["Kitchen", "Wifi", "pool"],
-    },
-];
+const imgPaths = [];
+const startingImgId = 0
+const endingImgId = 18
+for (let i = 0; i <= endingImgId; i++) {
+    imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
+}
 
 const fetchData = async (url) => {
     const res = await fetch(url);
@@ -30,29 +13,91 @@ const fetchData = async (url) => {
     }
     const data = await res.json();
     return data;
-    return testPlace;
 };
+
+// ----------- POPULATION ACTIONS AND PROPERTY TILES --------
+
+// ------ place data retrieval and manipulation ------
+
+const toTitleCase = (str) => {
+    if (!str) return "";
+    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const findLocation = (place) => {
+    const long = place.longitude;
+    const lat = place.latitude;
+    let location = Object.keys(cBB).find(
+        (key) =>
+            lat > cBB[key][0] &&
+            lat < cBB[key][2] &&
+            long > cBB[key][1] &&
+            long < cBB[key][3]
+    );
+    if (typeof location == "undefined") {
+        location = "Waterfront views";
+    }
+    return toTitleCase(location);
+};
+
+const getRndImgs = () => {
+    const srcArr = [];
+    const currImgs = [];
+    while (srcArr.length < 3) {
+        const rndIndex = Math.floor(Math.random() * (endingImgId - startingImgId + 1) + startingImgId);
+        if (!currImgs.includes(rndIndex)) {
+            srcArr.push(imgPaths[rndIndex]);
+            currImgs.push(rndIndex);
+        }
+    }
+    return srcArr;
+};
+
+// ------- property tile creation -----------
 
 const createPropertyTile = (place) => {
     const div = document.createElement("div");
     div.classList.add("property");
-    div.innerHTML = `<div class="property-image">
-                    Image
-                </div>
-                <div class="property-text-container">
-                    <p><strong>${place.title}</strong></p>
-                    <p class="price">$${place.price}/night – 4.45 stars</p>
-                </div>`;
+    div.innerHTML = `
+        <div class="property-image">
+            <div class="loading-dot-container">
+                <div class="loading-dot dot-1"></div>
+                <div class="loading-dot dot-2"></div>
+                <div class="loading-dot dot-3"></div>
+            </div>
+        </div>
+        <div class="property-text-container">
+        <p><strong>${toTitleCase(place.title)}</strong></p>
+        <p class="price">$${place.price}/night – ${findLocation(place)}</p>
+        </div>`;
     return div;
 };
+
+const addImgToTile = (tile) => {
+    const imgArr = getRndImgs();
+    const img = new Image(300, 300);
+    img.src = imgArr[0];
+    img.onload = () => {
+        const imgContainer = tile.querySelector(".property-image");
+        imgContainer.innerHTML = "";
+        imgContainer.appendChild(img);
+    };
+};
+
+// ------ page population events -------
 
 const populatePageOnLoad = async () => {
     const url = "http://127.0.0.1:5000/api/v1/places/";
     const places = await fetchData(url);
     const propertyContainer = document.querySelector(".properties-container");
+    propertyContainer.innerHTML = "";
     places.forEach((place) => {
         const propertyTile = createPropertyTile(place);
         propertyContainer.appendChild(propertyTile);
+    });
+    const propertyTiles = document.querySelectorAll(".property");
+    propertyTiles.forEach((tile) => {
+        addImgToTile(tile);
     });
 };
 
@@ -65,33 +110,57 @@ const populatePage = (places) => {
         const propertyTile = createPropertyTile(place);
         propertyContainer.appendChild(propertyTile);
     });
+    const propertyTiles = document.querySelectorAll(".property");
+    propertyTiles.forEach((tile) => {
+        addImgToTile(tile);
+    });
 };
 
-// ------------ SEARCH BAR ----------------
+
+
+// ------------ SEARCH BAR EVENTS ----------------
 
 const searchBar = document.querySelector(".search-bar");
-const suggestedResults = document.querySelector("#suggested-results");
+const suggestedResults = document.querySelector(".suggested-results");
 
 // ----- search by country ------
 
+const findWaterFrontProps = (places) => {
+    let waterfront = [];
+    places.forEach((place) => {
+        const long = place.longitude;
+        const lat = place.latitude;
+        let location = Object.keys(cBB).find(
+            (key) =>
+                lat > cBB[key][0] &&
+                lat < cBB[key][2] &&
+                long > cBB[key][1] &&
+                long < cBB[key][3]
+        );
+        if (typeof location == "undefined") {
+            waterfront.push(place);
+        }
+    });
+    return waterfront;
+};
+
 const handleSearch = async () => {
-    const searchedCountry = cBB[searchBar.value];
+    const searchedCountry = cBB[searchBar.value.toLowerCase()];
     const url = "http://127.0.0.1:5000/api/v1/places/";
     const allPlaces = await fetchData(url);
+    let filteredResults;
+    if (searchBar.value.toLowerCase() == "waterfront views") {
+        filteredResults = findWaterFrontProps(allPlaces);
+    } else {
+        filteredResults = allPlaces.filter(
+            (place) =>
+                place["latitude"] > searchedCountry[0] &&
+                place["latitude"] < searchedCountry[2] &&
+                place["longitude"] > searchedCountry[1] &&
+                place["longitude"] < searchedCountry[3]
+        );
+    }
     suggestedResults.innerHTML = "";
-    const filteredResults = allPlaces.filter((place) => {
-        const placeLatitude = place["latitude"];
-        const placeLongitude = place["longitude"];
-        if (
-            placeLatitude > searchedCountry[0] &&
-            placeLatitude < searchedCountry[2] &&
-            placeLongitude > searchedCountry[1] &&
-            placeLongitude < searchedCountry[3]
-        ) {
-            return true;
-        }
-        return false;
-    });
     if (filteredResults.length > 0) {
         populatePage(filteredResults);
     } else {
@@ -117,8 +186,8 @@ const handleAutoComplete = () => {
             const ul = document.createElement("ul");
             countries.forEach((country) => {
                 const li = document.createElement("li");
-                li.textContent = country;
-                li.addEventListener("click", function () {
+                li.textContent = toTitleCase(country);
+                li.addEventListener("click", () => {
                     searchBar.value = li.textContent;
                     suggestedResults.innerHTML = "";
                     handleSearch();
@@ -131,6 +200,8 @@ const handleAutoComplete = () => {
 };
 
 searchBar.addEventListener("input", handleAutoComplete);
+
+
 
 // ---------- FILTERS ------------
 
@@ -155,7 +226,10 @@ priceSlider.addEventListener("input", handlePriceSlider);
 const confirmPriceRangeBtn = document.querySelector(".price-range-confirm-btn");
 
 const handlePriceRange = () => {
-    const maxPrice = parseInt(priceSlider.value) < 125 ? parseInt(priceSlider.value) : Infinity;
+    const maxPrice =
+        parseInt(priceSlider.value) < 125
+            ? parseInt(priceSlider.value)
+            : Infinity;
     const properties = document.querySelectorAll(".property");
     properties.forEach((property) => {
         const price = parseFloat(
@@ -171,7 +245,7 @@ confirmPriceRangeBtn.addEventListener("click", handlePriceRange);
 
 const sortByPriceSelector = document.querySelector(".order-by-price-input");
 
-const sortPropertiesByPrice = (order) => {
+const sortByPriceHelper = (order) => {
     const properties = Array.from(document.querySelectorAll(".property")).map(
         (el) => ({
             element: el,
@@ -187,13 +261,18 @@ const sortPropertiesByPrice = (order) => {
     properties.forEach((property) => container.appendChild(property.element));
 };
 
-const handleSortBy = () => {
+const handleSortByPrice = () => {
     const value = sortByPriceSelector.value;
     if (value === "low-to-high") {
-        sortPropertiesByPrice("desc");
+        sortByPriceHelper("asc");
     } else {
-        sortPropertiesByPrice("asc");
+        sortByPriceHelper("desc");
     }
 };
 
-sortByPriceSelector.addEventListener("input", handleSortBy);
+sortByPriceSelector.addEventListener("input", handleSortByPrice);
+
+
+
+// ------------ PAGINATION ---------------
+

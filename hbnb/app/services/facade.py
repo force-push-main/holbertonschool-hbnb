@@ -48,7 +48,7 @@ class HBnBFacade:
                  re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
         return existing_amenity
 
-    def reate_amencity(self, amenity_data):
+    def create_amenity(self, amenity_data):
         if not amenity_data['name']:
             raise ValueError("Amenity name cannot be blank")
 
