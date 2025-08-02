@@ -69,7 +69,7 @@ class PlaceResource(Resource):
         try:
             place = facade.get_place(place_id)
 
-            if place['owner_id'] != current_user['id']:
+            if not current_user['is_admin'] and place['owner_id'] != current_user['id']:
                 return {'error': 'Unauthorized action'}, 403
 
             place_data = api.payload
