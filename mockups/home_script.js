@@ -283,4 +283,6 @@ const handleSortByPrice = () => {
 
 sortByPriceSelector.addEventListener("input", handleSortByPrice);
 
+
+
 // ------------ PAGINATION ---------------
