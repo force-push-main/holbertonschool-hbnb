@@ -10,7 +10,7 @@ class Place(BaseModel):
     price = db.Column(db.Float)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     owner = relationship('User', back_populates='places', lazy=True)
     reviews = relationship("Review", back_populates="place", lazy=True)

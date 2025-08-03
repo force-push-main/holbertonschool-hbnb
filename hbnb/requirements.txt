@@ -3,3 +3,6 @@ flask-restx
 sqlalchemy
 flask-sqlalchemy
 python-dotenv
+flask-bcrypt
+flask-jwt-extended
+flask_cors

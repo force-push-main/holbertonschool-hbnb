@@ -26,6 +26,7 @@ class HBnBFacade:
         if self.get_user_by_email(user_data['email']):
             raise ValueError("Email already registered")
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -34,6 +35,10 @@ class HBnBFacade:
 
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
+
+    def update_user(self, user_id, user_data):
+        self.user_repo.update(user_id, user_data)
+        return self.user_repo.get(user_id)
 
     def delete_user(self, user_id):
         if not self.user_repo.get(user_id):
@@ -48,7 +53,7 @@ class HBnBFacade:
                  re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
         return existing_amenity
 
-    def reate_amencity(self, amenity_data):
+    def create_amenity(self, amenity_data):
         if not amenity_data['name']:
             raise ValueError("Amenity name cannot be blank")
 
@@ -158,7 +163,7 @@ class HBnBFacade:
             "longitude": place.longitude,
             "owner_id": place.owner.id,
             "amenities": [amenity.name for amenity in place.amenities]
-            }
+        }
 
     def get_all_places(self):
         places = self.place_repo.get_all()
@@ -240,7 +245,7 @@ class HBnBFacade:
 
         self.place_repo.update(place_id, place_obj)
         updated_place = self.place_repo.get(place_id)
-        new_place_dict = {
+        return {
             "id": updated_place.id,
             "title": updated_place.title,
             "description": updated_place.description,
@@ -250,7 +255,6 @@ class HBnBFacade:
             "owner_id": updated_place.owner.id,
             "amenities": [amenity.name for amenity in updated_place.amenities]
         }
-        return new_place_dict
 
     """Review"""
 
@@ -259,18 +263,18 @@ class HBnBFacade:
             raise ValueError("Review must contain text")
         if not review_data['rating']:
             raise ValueError("Review must contain rating")
-        user = self.user_repo.get(review_data["user_id"])
+        author = self.user_repo.get(review_data["author_id"])
         place = self.place_repo.get(review_data["place_id"])
-        if not user:
+        if not author:
             raise ValueError("Review must be from a valid user")
         if not place:
             raise ValueError("Review must be for a valid place")
-        if place.owner.id == review_data['user_id']:
+        if place.owner.id == review_data['author_id']:
             raise ValueError("User can't leave reviews of own place")
         review_obj = {
             "text": review_data['text'],
             "rating": review_data['rating'],
-            "author": user,
+            "author": author,
             "place": place
         }
         review = Review(**review_obj)
@@ -279,7 +283,7 @@ class HBnBFacade:
             "id": review.id,
             "text": review.text,
             "rating": review.rating,
-            "user_id": review.author.id,
+            "author_id": review.author.id,
             "place_id": review.place.id
         }
         return new_review_dict
@@ -304,7 +308,7 @@ class HBnBFacade:
                 "id": review.id,
                 "text": review.text,
                 "rating": review.rating,
-                "user_id": review.user_id,
+                "author_id": review.author_id,
                 "place_id": review.place_id
             }
             reviews_list.append(review_object)
@@ -321,7 +325,7 @@ class HBnBFacade:
                 "id": review.id,
                 "text": review.text,
                 "rating": review.rating,
-                "user_id": review.user_id,
+                "author_id": review.author_id,
                 "place_id": review.place_id
             }
             reviews.append(review_object)
@@ -342,7 +346,7 @@ class HBnBFacade:
             "id": new_review.id,
             "text": new_review.text,
             "rating": new_review.rating,
-            "user_id": new_review.user_id,
+            "author_id": new_review.author_id,
             "place_id": new_review.place_id
         }
         return new_review_dict
