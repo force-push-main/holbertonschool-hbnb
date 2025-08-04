@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Page works</h1>
+
+</body>
+<script>
+    let placeData = [];
+    let lastFetchTime;
+    const maxAgeMs = 300000;
+    const queryString = window.location.search
+    const placeId = queryString.split('=')[1]
+    const url = `http://127.0.0.1:5000/api/v1/places/${placeId}`;
+    const fetchData = async (url) => {
+        if (placeData.length < 1 || Date.now() - lastFetchTime > maxAgeMs) {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error(
+                    `An error occured with status code: ${res.status}`
+                );
+            }
+            const data = await res.json();
+            placeData = data;
+            lastFetchTime = Date.now()
+        }
+        return placeData;
+    };
+    const onPageLoad = async () => {
+        const data = await fetchData(url)
+        console.log(data)
+    }
+    onPageLoad()
+</script>
+
+</html>

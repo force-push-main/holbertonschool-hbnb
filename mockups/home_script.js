@@ -74,17 +74,19 @@ const createPropertyTile = (place) => {
     const div = document.createElement("div");
     div.classList.add("property");
     div.innerHTML = `
+    <a href="./place.html?place_id=${place.id}">
         <div class="property-image">
-            <div class="loading-dot-container">
-                <div class="loading-dot dot-1"></div>
-                <div class="loading-dot dot-2"></div>
-                <div class="loading-dot dot-3"></div>
-            </div>
+        <div class="loading-dot-container">
+        <div class="loading-dot dot-1"></div>
+        <div class="loading-dot dot-2"></div>
+        <div class="loading-dot dot-3"></div>
+        </div>
         </div>
         <div class="property-text-container">
         <p><strong>${toTitleCase(place.title)}</strong></p>
         <p class="price">$${place.price}/night – ${findLocation(place)}</p>
-        </div>`;
+        </div>
+        </a>`
     return div;
 };
 

@@ -4,6 +4,7 @@
     --accent-color: #ddd;
     --heading-font: "Inter", Arial, sans-serif;
     --paragraph-font: "Inter", Arial, sans-serif;
+    --font-color: black;
     --heading-font-size: 1rem;
     --paragraph-font-size: 0.9rem;
     --property-image-size: 300px;
@@ -240,6 +241,11 @@ p {
 
 .property:hover {
     transform: scale(1.05);
+}
+
+.property a {
+    color: var(--font-color);
+    text-decoration: none;
 }
 
 .property-image {

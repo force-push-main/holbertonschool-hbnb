@@ -10,7 +10,6 @@ user_model = api.model('User', {
     'last_name': fields.String(required=True, description='Last name of the user', min_len=1),
     'email': fields.String(required=True, description='Email of the user', min_len=1),
     'password': fields.String(required=True, description='Password for the user'),
-    'is_admin': fields.Boolean(default=False, description='Sets privilege level for user', min_len=1)
 })
 
 @api.route('/')
@@ -27,7 +26,6 @@ class UserList(Resource):
                 'first_name': new_user.first_name,
                 'last_name': new_user.last_name,
                 'email': new_user.email,
-                'is_admin': new_user.is_admin
             }, 201
         except Exception as e:
             return {'error': f'{e}'}, 400
