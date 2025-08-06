@@ -8,7 +8,16 @@
 </head>
 
 <body>
-    <h1>Page works</h1>
+    <h1 class="heading">Page works</h1>
+    <form>
+        <input type="email">
+        <input type="password">
+        <button type="submit">Login!</button>
+    </form>
+
+    <script>
+        localStorage.setItem(data)
+    </script>
 
 </body>
 <script>
@@ -35,8 +44,11 @@
     const onPageLoad = async () => {
         const data = await fetchData(url)
         console.log(data)
+        const heading = document.querySelector('.heading')
+        // from here add details about the place from the fetched data, e.g. ...
+        heading.textContent = data.title
     }
     onPageLoad()
-</script>
+</>
 
-</html>
+</html >
