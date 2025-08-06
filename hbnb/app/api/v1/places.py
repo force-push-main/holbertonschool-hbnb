@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
 
@@ -30,18 +31,19 @@ place_model = api.model('Place', {
 @api.route('/')
 class PlaceList(Resource):
     @api.expect(place_model)
-    @api.response(201, 'Place successfully created')
-    @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
+
         """Register a new place"""
         try:
             place_data = api.payload
+            place_data['owner_id'] = current_user['id']
             place = facade.create_place(place_data)
             return place, 201
         except Exception as e:
             return {"error": f'{e}'}, 400
 
-    @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
         places = facade.get_all_places()
@@ -49,29 +51,43 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
-    @api.response(200, 'Place details retrieved successfully')
-    @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
         try:
             place = facade.get_place(place_id)
             if not place:
                 return {"error": "Place not found"}, 404
+            return place, 200
         except Exception as e:
             return {'error': f'{e}'}, 404
 
     @api.expect(place_model)
-    @api.response(200, 'Place updated successfully')
-    @api.response(404, 'Place not found')
-    @api.response(400, 'Invalid input data')
+    @jwt_required()
     def put(self, place_id):
         """Update a place's information"""
+        current_user = get_jwt_identity()
         try:
+            place = facade.get_place(place_id)
+
+            if not current_user['is_admin'] and place['owner_id'] != current_user['id']:
+                return {'error': 'Unauthorized action'}, 403
+
             place_data = api.payload
-            place = facade.update_place(place_id, place_data)
-            return place
+            place_data['owner_id'] = place['owner_id']
+            updated_place = facade.update_place(place_id, place_data)
+            return updated_place
 
         except KeyError as e:
             return {'error': f'{e}'}, 404
         except Exception as e:
             return {"error": f"{e}"}, 400
+
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        try:
+            all_reviews = facade.get_reviews_by_place(place_id)
+            return all_reviews, 200
+        except Exception as e:
+            return {'error': f"{e}"}, 404

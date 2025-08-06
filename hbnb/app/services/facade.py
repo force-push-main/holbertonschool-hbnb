@@ -1,4 +1,3 @@
-from app.persistence.repository import InMemoryRepository
 from app.persistence.repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.amenity import Amenity
@@ -27,6 +26,7 @@ class HBnBFacade:
         if self.get_user_by_email(user_data['email']):
             raise ValueError("Email already registered")
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -36,17 +36,28 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
+    def update_user(self, user_id, user_data):
+        self.user_repo.update(user_id, user_data)
+        return self.user_repo.get(user_id)
+
     def delete_user(self, user_id):
+        if not self.user_repo.get(user_id):
+            raise ValueError("User doesn't exist")
         self.user_repo.delete(user_id)
 
     """Amenity"""
+    def check_amenity_exists(self, amenity_name):
+        amenities = self.amenity_repo.get_all()
+        clean_name = re.sub(r'[^a-z]', '', amenity_name.lower())
+        existing_amenity = next((amenity for amenity in amenities if 
+                 re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
+        return existing_amenity
+
     def create_amenity(self, amenity_data):
         if not amenity_data['name']:
             raise ValueError("Amenity name cannot be blank")
 
-        clean_name = re.sub(r'[^a-z]', '', amenity_data['name'].lower())
-        if next((amenity for amenity in self.amenity_repo._storage.values() if 
-                 re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None):
+        if self.check_amenity_exists(amenity_data['name']):
             raise ValueError("Amenity already exists")
 
         amenity_data['name'] = amenity_data['name'].title()
@@ -87,7 +98,7 @@ class HBnBFacade:
             raise ValueError("Place must have a description")
 
         #check price format and value
-        if (type (place_data['price']) != float or 
+        if (type(place_data['price']) != float or 
                 place_data['price'] < 0.0):
             raise ValueError("Place must have a price")
 
@@ -118,9 +129,7 @@ class HBnBFacade:
         amenities_list = []
 
         for amenity_name in place_data["amenities"]:
-            clean_name = re.sub(r'[^a-z]', '', amenity_name.lower())
-            existing_amenity = next((amenity for amenity in self.amenity_repo._storage.values() if 
-            re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
+            existing_amenity = self.check_amenity_exists(amenity_name)
             if not existing_amenity:
                 existing_amenity = self.create_amenity({"name": amenity_name})
             amenities_list.append(existing_amenity)
@@ -136,7 +145,7 @@ class HBnBFacade:
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "owner_id": place.owner.id,
+            "user_id": place.owner.id,
             "amenities": [amenity.name for amenity in place.amenities]
         }
         return new_place_dict
@@ -146,14 +155,15 @@ class HBnBFacade:
         if not place:
             raise ValueError("Place not found")
         return {
+            "id": place.id,
             "title": place.title,
             "description": place.description,
             "price": place.price,
             "latitude": place.latitude,
             "longitude": place.longitude,
-            "owner_id": place.owner.__dict__,
-            "amenities": [amenity.__dict__ for amenity in place.amenities]
-            }
+            "owner_id": place.owner.id,
+            "amenities": [amenity.name for amenity in place.amenities]
+        }
 
     def get_all_places(self):
         places = self.place_repo.get_all()
@@ -162,15 +172,19 @@ class HBnBFacade:
             place_obj = {
                 "id": place.id,
                 "title": place.title,
+                "description": place.description,
+                "price": place.price,
                 "latitude": place.latitude,
                 "longitude": place.longitude,
+                "owner_id": place.owner.id,
+                "amenities": [amenity.name for amenity in place.amenities]
             }
             places_list.append(place_obj)
         return places_list
 
     def update_place(self, place_id, place_data):
 
-        place = self.place_repo.get_by_attribute('id', place_data['place_id'])
+        place = self.place_repo.get(place_id)
         if not place:
             raise KeyError("Place not found")
 
@@ -207,16 +221,13 @@ class HBnBFacade:
                 raise ValueError("Place must have a longitude")
 
         place_obj = dict(place_data)
-        """no matter outcome of next checks, place_obj shouldn't have a field for owner_id or amenities 
-        because Place takes class objects, not strings for these fields, and pop safely removes key-values 
-        without throwing errors if the key doesn't exist"""
         place_obj.pop('owner_id')
         place_obj.pop('amenities')
 
         if 'owner_id' in place_data:
             if not place_data['owner_id']:
                 raise ValueError("Place must have an owner")
-            new_owner = self.user_repo.get_by_attribute('id', place_data["owner_id"])
+            new_owner = self.user_repo.get(place_data["owner_id"])
             if not new_owner:
                 raise ValueError("Place must have a valid owner")
             curr_owner_id = place.owner.id
@@ -225,11 +236,8 @@ class HBnBFacade:
 
         if 'amenities' in place_data:
             amenities_list = []
-
             for amenity_name in place_data["amenities"]:
-                clean_name = re.sub(r'[^a-z]', '', amenity_name.lower())
-                existing_amenity = next((amenity for amenity in self.amenity_repo._storage.values() if 
-                re.sub(r'[^a-z]', '', getattr(amenity, 'name', '').lower()) == clean_name), None)
+                existing_amenity = self.check_amenity_exists(amenity_name)
                 if not existing_amenity:
                     existing_amenity = self.create_amenity({"name": amenity_name})
                 amenities_list.append(existing_amenity)
@@ -237,7 +245,8 @@ class HBnBFacade:
 
         self.place_repo.update(place_id, place_obj)
         updated_place = self.place_repo.get(place_id)
-        new_place_dict = {
+        return {
+            "id": updated_place.id,
             "title": updated_place.title,
             "description": updated_place.description,
             "price": updated_place.price,
@@ -246,7 +255,6 @@ class HBnBFacade:
             "owner_id": updated_place.owner.id,
             "amenities": [amenity.name for amenity in updated_place.amenities]
         }
-        return new_place_dict
 
     """Review"""
 
@@ -255,25 +263,27 @@ class HBnBFacade:
             raise ValueError("Review must contain text")
         if not review_data['rating']:
             raise ValueError("Review must contain rating")
-        owner = self.user_repo.get(review_data["user_id"])
+        author = self.user_repo.get(review_data["author_id"])
         place = self.place_repo.get(review_data["place_id"])
-        if not owner:
+        if not author:
             raise ValueError("Review must be from a valid user")
         if not place:
             raise ValueError("Review must be for a valid place")
+        if place.owner.id == review_data['author_id']:
+            raise ValueError("User can't leave reviews of own place")
         review_obj = {
             "text": review_data['text'],
             "rating": review_data['rating'],
-            "user": owner,
+            "author": author,
             "place": place
         }
         review = Review(**review_obj)
         self.review_repo.add(review)
-        place.add_review(review)
         new_review_dict = {
+            "id": review.id,
             "text": review.text,
             "rating": review.rating,
-            "user_id": review.user.id,
+            "author_id": review.author.id,
             "place_id": review.place.id
         }
         return new_review_dict
@@ -285,21 +295,40 @@ class HBnBFacade:
         new_review_dict = {
             "text": review.text,
             "rating": review.rating,
-            "user_id": review.user.id,
+            "author_id": review.author.id,
             "place_id": review.place.id
         }
         return new_review_dict
 
     def get_all_reviews(self):
-        return self.review_repo.get_all()
+        reviews = self.review_repo.get_all()
+        reviews_list = []
+        for review in reviews:
+            review_object = {
+                "id": review.id,
+                "text": review.text,
+                "rating": review.rating,
+                "author_id": review.author_id,
+                "place_id": review.place_id
+            }
+            reviews_list.append(review_object)
+        return reviews_list
 
     def get_reviews_by_place(self, place_id):
         place = self.place_repo.get(place_id)
+        print('hello world')
         if not place:
             raise ValueError("Place not found")
         reviews = []
         for review in place.reviews:
-            reviews.append(review.__dict__)
+            review_object = {
+                "id": review.id,
+                "text": review.text,
+                "rating": review.rating,
+                "author_id": review.author_id,
+                "place_id": review.place_id
+            }
+            reviews.append(review_object)
         return reviews
 
     def update_review(self, review_id, review_data):
@@ -314,8 +343,11 @@ class HBnBFacade:
         self.review_repo.update(review_id, review_data)
         new_review = self.review_repo.get(review_id)
         new_review_dict = {
+            "id": new_review.id,
             "text": new_review.text,
-            "rating": new_review.rating
+            "rating": new_review.rating,
+            "author_id": new_review.author_id,
+            "place_id": new_review.place_id
         }
         return new_review_dict
 
