@@ -1,54 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    <h1 class="heading">Page works</h1>
-    <form>
-        <input type="email">
-        <input type="password">
-        <button type="submit">Login!</button>
-    </form>
-
-    <script>
-        localStorage.setItem(data)
-    </script>
-
-</body>
-<script>
-    let placeData = [];
-    let lastFetchTime;
-    const maxAgeMs = 300000;
-    const queryString = window.location.search
-    const placeId = queryString.split('=')[1]
-    const url = `http://127.0.0.1:5000/api/v1/places/${placeId}`;
-    const fetchData = async (url) => {
-        if (placeData.length < 1 || Date.now() - lastFetchTime > maxAgeMs) {
-            const res = await fetch(url);
-            if (!res.ok) {
-                throw new Error(
-                    `An error occured with status code: ${res.status}`
-                );
-            }
-            const data = await res.json();
-            placeData = data;
-            lastFetchTime = Date.now()
-        }
-        return placeData;
-    };
-    const onPageLoad = async () => {
-        const data = await fetchData(url)
-        console.log(data)
-        const heading = document.querySelector('.heading')
-        // from here add details about the place from the fetched data, e.g. ...
-        heading.textContent = data.title
-    }
-    onPageLoad()
-</>
-
-</html >
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./styles/normalize.css" />
+		<link rel="stylesheet" href="./styles/app.css" />
+		<link rel="stylesheet" href="./styles/place.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
+		<script src="./scripts/place.js" type="module" defer></script>
+		<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="container">
+			<header class="place-header">
+				<h1 class="place-title"></h1>
+			</header>
+			<section class="splide" aria-label="Property images">
+				<div class="splide__track">
+					<ul class="splide__list"></ul>
+				</div>
+			</section>
+			<div class="place-container">
+				<main>
+					<section class="place-section">
+						<div class="place-owner">
+							<img
+								src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+								alt="Property owner"
+								class="owner-avatar"
+							/>
+							<p class="owner-name"></p>
+						</div>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">About this property</h4>
+						<p class="place-description"></p>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">What this property offers</h4>
+						<ul class="place-amenities"></ul>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">Leave a review</h4>
+						<form action="" class="review-form">
+							<textarea class="review-input"></textarea>
+							<div class="review-footer">
+								<div class="review-ratings">
+									<button type="button" class="review-rating">1</button>
+									<button type="button" class="review-rating">2</button>
+									<button type="button" class="review-rating">3</button>
+									<button type="button" class="review-rating">4</button>
+									<button type="button" class="review-rating">5</button>
+								</div>
+								<button type="submit" class="btn">Submit</button>
+							</div>
+						</form>
+					</section>
+				</main>
+				<aside class="place-sidebar">
+					<div class="place-price">
+						<span></span>
+						<small>per night</small>
+					</div>
+					<div class="place-nights">
+						<button class="place-night selected">1</button>
+						<button class="place-night">2</button>
+						<button class="place-night">3</button>
+					</div>
+					<div class="place-total">
+						<small>Total</small>
+						<span></span>
+					</div>
+					<button class="place-reserve btn">Reserve</button>
+				</aside>
+			</div>
+		</div>
+	</body>
+</html>

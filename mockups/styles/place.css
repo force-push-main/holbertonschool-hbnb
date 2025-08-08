@@ -1,0 +1,184 @@
+/* 
+	Title
+*/
+.place-title {
+	padding: 25px 0;
+}
+
+/*
+	Slider
+*/
+.splide {
+	border-radius: 8px;
+	overflow: hidden;
+	aspect-ratio: 16 / 9;
+	width: 100%;
+}
+.splide__slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	aspect-ratio: 16 / 9;
+}
+
+/*
+	Content
+*/
+.place-container {
+	margin-top: 24px;
+	display: grid;
+	grid-template-columns: 1fr 300px;
+	gap: 24px;
+	align-items: flex-start;
+	padding-bottom: 64px;
+}
+
+/*
+	Main content/left side
+*/
+.place-section:not(:last-child) {
+	margin-bottom: 24px;
+	padding-bottom: 24px;
+	border-bottom: 1px solid #dadada;
+}
+.place-owner {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+.owner-avatar {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+.owner-name {
+	font-size: 18px;
+	font-weight: 500;
+}
+.place-sub-title {
+	font-size: 18px;
+	font-weight: 500;
+	display: block;
+	margin-bottom: 12px;
+}
+.place-description {
+	line-height: 1.5;
+}
+.place-amenities {
+	margin: 0;
+}
+.place-amenity:not(:last-child) {
+	margin-bottom: 6px;
+}
+
+/*
+	Review form
+*/
+.review-form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	.btn {
+		align-self: flex-end;
+	}
+}
+.review-input {
+	background: #eee;
+	resize: vertical;
+	border-radius: 8px;
+	padding: 16px;
+	min-height: 100px;
+}
+.review-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.review-ratings {
+	display: inline-flex;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	overflow: hidden;
+}
+.review-rating {
+	width: 32px;
+	height: 32px;
+	font-size: 14px;
+	&:not(:last-child) {
+		border-right: 1px solid #ccc;
+	}
+	&:hover {
+		background: #eee;
+		color: black;
+	}
+	&.selected {
+		background: black;
+		color: white;
+	}
+}
+
+/*
+	Sidebar/right side
+*/
+.place-sidebar {
+	padding: 24px;
+	background: #fff;
+	border-radius: 5px;
+	box-shadow: var(--shadow);
+	position: sticky;
+	top: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+.place-price {
+	display: flex;
+	align-items: flex-end;
+	gap: 4px;
+	span {
+		font-size: 20px;
+		font-weight: 500;
+	}
+	small {
+		font-size: 14px;
+		font-weight: 600;
+		color: #999;
+	}
+}
+.place-nights {
+	border: 1px solid black;
+	border-radius: 5px;
+	display: flex;
+}
+.place-night {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 0;
+	&:not(:last-child) {
+		border-right: 1px solid black;
+	}
+	&.selected {
+		background: black;
+		color: white;
+	}
+}
+.place-total {
+	border-top: 1px solid #ddd;
+	padding-top: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 4px;
+	span {
+		font-size: 20px;
+		font-weight: 500;
+	}
+	small {
+		font-size: 16px;
+		font-weight: 500;
+	}
+}
