@@ -17,10 +17,6 @@ class User(BaseModel):
     places = relationship('Place', back_populates='owner', lazy=True, cascade="all, delete-orphan")
     reviews = relationship("Review", back_populates="author", lazy=True, cascade="all, delete-orphan")
 
-<<<<<<< HEAD
-    places = relationship('Place', back_populates='owner', lazy=True)
-    reviews = relationship("Review", back_populates="author", lazy=True)
-=======
     def hash_password(self, password):
         """Hashes the password before storing it."""
         if not password:
@@ -34,4 +30,5 @@ class User(BaseModel):
             return False
         from app import bcrypt
         return bcrypt.check_password_hash(self.password, password)
->>>>>>> origin/master
+    places = relationship('Place', back_populates='owner', lazy=True)
+    reviews = relationship("Review", back_populates="author", lazy=True)
