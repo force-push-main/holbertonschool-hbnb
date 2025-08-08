@@ -1,8 +1,6 @@
-import cBB from "./assets/country_bounding_boxes.json" with {type: 'json'};
-
-let placeData = [];
-let lastFetchTime;
-const maxAgeMs = 300000;
+import cBB from "../assets/country_bounding_boxes.json" with {type: 'json'};
+import { fetchData } from './fetch.js'
+import { toTitleCase } from './utils.js'
 
 const imgPaths = [];
 const startingImgId = 0;
@@ -11,31 +9,13 @@ for (let i = 0; i <= endingImgId; i++) {
     imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
 }
 
-const fetchData = async (url) => {
-    if (typeof lastFetchTime == 'undefined' || Date.now() - lastFetchTime > maxAgeMs) {
-            const res = await fetch(url);
-            if (!res.ok) {
-                throw new Error(
-                    `An error occured with status code: ${res.status}`
-                );
-            }
-            const data = await res.json();
-            placeData = data;
-            lastFetchTime = Date.now()
-    }
-    return placeData;
-};
-
 
 
 // ----------- POPULATION ACTIONS AND PROPERTY TILES --------
 
 // ------ place data retrieval and manipulation ------
 
-const toTitleCase = (str) => {
-    if (!str) return "";
-    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-};
+
 
 const findLocation = (place) => {
     const long = place.longitude;
@@ -104,8 +84,7 @@ const addImgToTile = (tile) => {
 // ------ page population events -------
 
 const populatePageOnLoad = async () => {
-    const url = "http://127.0.0.1:5000/api/v1/places/";
-    const places = await fetchData(url);
+    const places = await fetchData('home_init', '/places');
     const propertyContainer = document.querySelector(".properties-container");
     propertyContainer.innerHTML = "";
     places.forEach((place) => {
@@ -161,8 +140,7 @@ const findWaterFrontProps = (places) => {
 
 const handleSearch = async () => {
     const searchedCountry = cBB[searchBar.value.toLowerCase()];
-    const url = "http://127.0.0.1:5000/api/v1/places/";
-    const allPlaces = await fetchData(url);
+    const allPlaces = await fetchData('home_search', '/places');
     let filteredResults;
     if (searchBar.value.toLowerCase() == "waterfront views") {
         filteredResults = findWaterFrontProps(allPlaces);

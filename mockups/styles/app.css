@@ -1,0 +1,46 @@
+:root {
+	--standard-padding: 2rem;
+	--primary-color: white;
+	--accent-color: #ddd;
+	--heading-font: 'Inter', Arial, sans-serif;
+	--paragraph-font: 'Inter', Arial, sans-serif;
+	--font-color: black;
+	--heading-font-size: 1rem;
+	--paragraph-font-size: 0.9rem;
+	--property-image-size: 300px;
+	--placeholder-background-color: #e4e4e4;
+	--anchor-color: rgb(42, 108, 214);
+	--shadow: 0 2px 15px hsl(0 0% 0% / 0.05);
+}
+
+body {
+	font-family: var(--heading-font);
+	font-size: var(--heading-font);
+	background: #f7f7f7;
+}
+
+h1,
+h2,
+h3 {
+	font-weight: 600;
+}
+
+.container {
+	max-width: 960px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 24px;
+}
+
+.btn {
+	background: black;
+	color: white;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 12px 18px;
+	border-radius: 4px;
+
+	&:hover {
+		background: #444;
+	}
+}

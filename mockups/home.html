@@ -1,268 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./styles/normalize.css" />
+		<link rel="stylesheet" href="./styles/app.css" />
+		<link rel="stylesheet" href="./styles/home.css" />
+		<script src="./scripts/home.js" type="module" defer></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styles_home.css">
-    <script src="./home_script.js" type="module" defer></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet">
-</head>
+	<body>
+		<header>
+			<div class="logo">
+				<a href="home.html">
+					<img src="./assets/logo-transparent.png" width="100px" height="100px" alt="HBnB logo" />
+				</a>
+			</div>
+			<section class="search-bar-container">
+				<input class="search-bar" type="search" placeholder="search for properties" />
+				<div class="suggested-results"></div>
+			</section>
+		</header>
+		<main>
+			<div class="filter-property-container">
+				<div class="filters-container">
+					<div class="order-by-price-container">
+						<label for="order-by-price-input">Order properties by price</label>
+						<select name="order-by-price-input" id="order-by-price-input" class="order-by-price-input">
+							<option value="high-to-low">High to low</option>
+							<option value="low-to-high">Low to high</option>
+						</select>
+					</div>
+					<div class="price-range-slider-container">
+						<label for="price-range-slider">Set maximum price</label>
+						<input
+							type="range"
+							name="price-range-slider"
+							id="price-range-slider"
+							class="price-range-slider"
+							min="0"
+							max="125"
+							value="125"
+							list="values"
+						/>
+						<datalist id="values">
+							<option value="0" label="$0"></option>
+							<option value="25" label="$25"></option>
+							<option value="50" label="$50"></option>
+							<option value="75" label="$75"></option>
+							<option value="100" label="$100"></option>
+							<option value="any" label="Any"></option>
+						</datalist>
+						<div class="price-range-selection">
+							<p>Any</p>
+						</div>
+						<button type="button" class="price-range-confirm-btn">Confirm</button>
+					</div>
+				</div>
 
-<input type="password">
-
-<body>
-    <header>
-        <div class="logo">
-            <a href="home.html">
-                <img src="./assets/logo-transparent.png" width="100px" height="100px" alt="HBnB logo">
-            </a>
-        </div>
-        <!-- <button onclick="getSnippet()">click</button>
-        <div id="target"></div> -->
-        <section class="search-bar-container">
-            <input class="search-bar" type="search" placeholder="search for properties">
-            <div class="suggested-results"></div>
-        </section>
-    </header>
-    <main>
-        <div class="filter-property-container">
-            <div class="filters-container">
-                <div class="order-by-price-container">
-                    <label for="order-by-price-input">Order properties by price</label>
-                    <select name="order-by-price-input" id='order-by-price-input' class="order-by-price-input">
-                        <option value="high-to-low">High to low</option>
-                        <option value="low-to-high">Low to high</option>
-                    </select>
-                </div>
-                <div class="price-range-slider-container">
-                    <label for="price-range-slider">Set maximum price</label>
-                    <input type="range" name="price-range-slider" id="price-range-slider" class="price-range-slider"
-                        min="0" max="125" value="125" list="values">
-                    <datalist id="values">
-                        <option value="0" label="$0"></option>
-                        <option value="25" label="$25"></option>
-                        <option value="50" label="$50"></option>
-                        <option value="75" label="$75"></option>
-                        <option value="100" label="$100"></option>
-                        <option value="any" label="Any"></option>
-                    </datalist>
-                    <div class="price-range-selection">
-                        <p>Any</p>
-                    </div>
-                    <button type="button" class="price-range-confirm-btn">Confirm</button>
-                </div>
-            </div>
-
-
-            <section class="properties-container">
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-                <div class="property placeholder">
-                    <div class="property-image">
-                        <div class="loading-dot-container">
-                            <div class="loading-dot dot-1"></div>
-                            <div class="loading-dot dot-2"></div>
-                            <div class="loading-dot dot-3"></div>
-                        </div>
-                    </div>
-                    <div class="property-text-container placeholder-text-container">
-                    </div>
-                </div>
-            </section>
-        </div>
-        <div class="pagination-container">
-            <button class="page-selector page-1">
-                <h3>1</h3>
-            </button>
-            <button class="page-selector page-2">
-                <h3>2</h3>
-            </button>
-            <button class="page-selector page-3">
-                <h3>3</h3>
-            </button>
-            <button class="page-selector page-between">
-                <h3>...</h3>
-            </button>
-            <button class="page-selector page-last">
-                <h3>Last</h3>
-            </button>
-        </div>
-
-    </main>
-    <footer>
-        <p>Copyright © in perpetuity HBnB™. All rights reserved.</p>
-    </footer>
-</body>
-
-
-
+				<section class="properties-container">
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+					<div class="property placeholder">
+						<div class="property-image">
+							<div class="loading-dot-container">
+								<div class="loading-dot dot-1"></div>
+								<div class="loading-dot dot-2"></div>
+								<div class="loading-dot dot-3"></div>
+							</div>
+						</div>
+						<div class="property-text-container placeholder-text-container"></div>
+					</div>
+				</section>
+			</div>
+			<div class="pagination-container">
+				<button class="page-selector page-1">
+					<h3>1</h3>
+				</button>
+				<button class="page-selector page-2">
+					<h3>2</h3>
+				</button>
+				<button class="page-selector page-3">
+					<h3>3</h3>
+				</button>
+				<button class="page-selector page-between">
+					<h3>...</h3>
+				</button>
+				<button class="page-selector page-last">
+					<h3>Last</h3>
+				</button>
+			</div>
+		</main>
+		<footer>
+			<p>Copyright © in perpetuity HBnB™. All rights reserved.</p>
+		</footer>
+	</body>
 </html>
