@@ -2,6 +2,7 @@ from app.models.base import BaseModel
 from sqlalchemy.orm import relationship
 from app.persistence.repository import db
 
+
 class Amenity(BaseModel):
     __tablename__ = 'amenities'
 
