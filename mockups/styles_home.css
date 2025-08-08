@@ -1,7 +1,9 @@
 :root {
     --standard-padding: 2rem;
-    --primary-color: white;
-    --accent-color: #ddd;
+    --primary-color: rgb(244, 244, 244);
+    --accent-color: white;
+    /* --secondary-accent-color: rgb(196, 107, 63); */
+    --secondary-accent-color: #d73502;
     --heading-font: "Inter", Arial, sans-serif;
     --paragraph-font: "Inter", Arial, sans-serif;
     --font-color: black;
@@ -10,6 +12,7 @@
     --property-image-size: 300px;
     --placeholder-background-color: #e4e4e4;
     --anchor-color: rgb(42, 108, 214);
+    --drop-shadow: drop-shadow(3px 3px 3px rgb(203, 203, 203));
 }
 
 * {
@@ -41,6 +44,7 @@ main {
     padding: 2rem;
     padding-top: 180px;
     gap: 50px;
+    background-color: var(--primary-color);
 }
 
 p {
@@ -72,36 +76,41 @@ p {
     width: 80%;
     height: 40px;
     border-radius: 40px;
-    padding-left: 40px;
-    background-color: #1a090d;
-    color: white;
-    border: 2px solid #faae34;
+    padding: 0px 40px;
+    background-color: var(--accent-color);
+    outline: none;
+    border: 2px solid black;
+}
+
+.search-bar-container .search-bar:focus {
+    border: 2px solid var(--secondary-accent-color);
 }
 
 .search-bar-container .suggested-results {
-    margin-top: 10px;
+    position: absolute;
+    top: 50px;
     width: 80%;
     text-align: left;
+    filter: var(--drop-shadow);
 }
 
 .search-bar-container .suggested-results ul {
     display: flex;
     flex-direction: column;
     list-style-type: none;
-    border: 1px solid black;
-    border-radius: 40px;
-    padding: 20px 40px;
+    border-radius: 10px;
     width: 99%;
-    background-color: wheat;
+    background-color: var(--accent-color);
 }
 
 .search-bar-container .suggested-results ul li {
     cursor: pointer;
     line-height: 1.5;
+    padding: 20px 40px;
 }
 
 .search-bar-container .suggested-results ul li:hover {
-    background-color: var(--accent-color);
+    background-color: var(--primary-color);
 }
 
 .filter-property-container {
@@ -118,8 +127,11 @@ p {
     align-items: center;
     justify-content: flex-end;
     width: 300px;
-    padding-top: 80px;
+    padding: 80px 0px;
+    border-radius: 10px;
     gap: 50px;
+    background-color: var(--accent-color);
+    filter: var(--drop-shadow);
 }
 
 .order-by-price-container {
@@ -140,6 +152,7 @@ p {
 .price-range-slider-container input[type="range"] {
     width: 200px;
     margin: 0;
+    accent-color: var(--secondary-accent-color);
 }
 
 .price-range-slider-container datalist {
@@ -156,11 +169,43 @@ p {
     padding: 0;
 }
 
+.price-range-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 60px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    margin: 15px;
+}
+
+.price-range-selection p {
+    text-align: center;
+}
+
+.price-range-confirm-btn {
+    background-color: var(--secondary-accent-color);
+    color: white;
+    height: 50px;
+    width: 110px;
+    border-radius: 10px;
+    border: none;
+    /* filter: var(--drop-shadow); */
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.price-range-confirm-btn p {
+    font-size: 1.1rem;
+}
+
 .properties-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, 320px);
     width: 100%;
-    margin-left: 320px;
+    margin-left: 350px;
+    gap: 15px 0px;
 }
 
 .placeholder {
@@ -322,4 +367,5 @@ footer {
     width: 100vw;
     padding: var(--standard-padding);
     border-top: 1px solid black;
+    background-color: var(--primary-color);
 }

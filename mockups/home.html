@@ -14,7 +14,7 @@
         rel="stylesheet">
 </head>
 
-<input type="password">
+
 
 <body>
     <header>
@@ -26,7 +26,7 @@
         <!-- <button onclick="getSnippet()">click</button>
         <div id="target"></div> -->
         <section class="search-bar-container">
-            <input class="search-bar" type="search" placeholder="search for properties">
+            <input class="search-bar" name="search-bar" type="search" placeholder="search for properties">
             <div class="suggested-results"></div>
         </section>
     </header>
@@ -42,6 +42,9 @@
                 </div>
                 <div class="price-range-slider-container">
                     <label for="price-range-slider">Set maximum price</label>
+                    <div class="price-range-selection">
+                        <p>Any</p>
+                    </div>
                     <input type="range" name="price-range-slider" id="price-range-slider" class="price-range-slider"
                         min="0" max="125" value="125" list="values">
                     <datalist id="values">
@@ -52,10 +55,9 @@
                         <option value="100" label="$100"></option>
                         <option value="any" label="Any"></option>
                     </datalist>
-                    <div class="price-range-selection">
-                        <p>Any</p>
-                    </div>
-                    <button type="button" class="price-range-confirm-btn">Confirm</button>
+                    <button type="button" class="price-range-confirm-btn">
+                        <p>Confirm</p>
+                    </button>
                 </div>
             </div>
 
@@ -238,23 +240,6 @@
                     </div>
                 </div>
             </section>
-        </div>
-        <div class="pagination-container">
-            <button class="page-selector page-1">
-                <h3>1</h3>
-            </button>
-            <button class="page-selector page-2">
-                <h3>2</h3>
-            </button>
-            <button class="page-selector page-3">
-                <h3>3</h3>
-            </button>
-            <button class="page-selector page-between">
-                <h3>...</h3>
-            </button>
-            <button class="page-selector page-last">
-                <h3>Last</h3>
-            </button>
         </div>
 
     </main>
