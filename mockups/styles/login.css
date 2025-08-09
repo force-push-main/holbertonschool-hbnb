@@ -1,0 +1,97 @@
+/*
+    Login Page
+*/
+
+/* 
+    Root variables
+*/
+:root {
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/*
+    Body & layout
+*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+/*
+    Login form container
+*/
+#login-form {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+    width: 100%;
+    max-width: 480px; /* Larger to fit logo */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/*
+    Logo
+*/
+.logo {
+    display: block;
+    margin: 0 auto 16px;
+    max-width: 120px;
+    height: auto;
+}
+
+/*
+    Form title
+*/
+#login-form h2 {
+    font-size: 26px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/*
+    Labels & inputs
+*/
+label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+input[type="email"],
+input[type="password"] {
+    padding: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    width: 100%;
+}
+
+/*
+    Button
+*/
+button {
+    padding: 14px;
+    border: none;
+    border-radius: 5px;
+    background: black;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #333;
+}
