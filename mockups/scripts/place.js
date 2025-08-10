@@ -74,7 +74,7 @@ const onPageLoad = async () => {
 	});
 
 	reserveElement.addEventListener('click', () => {
-		alert(`You reserved: ${data.title} for ${nights} night${nights > 1 ? 's' : ''}, totaling for: ${price}`);
+		alert(`You reserved: ${data.title} for ${nights} night${nights > 1 ? 's' : ''}, totaling for: $${price}`);
 	});
 };
 

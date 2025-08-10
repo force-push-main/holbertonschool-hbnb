@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="./styles/login.css">
-</head>
-<body>
-    <main>
-        <form id="login-form">
-            <!-- Logo -->
-            <img src="./assets/logo-transparent.png" alt="Site Logo" class="logo">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login</title>
+		<link rel="stylesheet" href="./styles/normalize.css" />
+		<link rel="stylesheet" href="./styles/app.css" />
+		<link rel="stylesheet" href="./styles/login.css" />
+		<script src="./scripts/login.js" type="module" defer></script>
+	</head>
+	<body>
+		<header class="header">
+			<div class="header-left">
+				<a href="home.html" class="header-logo">
+					<img src="./assets/logo-transparent.png" alt="HBnB logo" />
+				</a>
+			</div>
+			<div class="header-middle"></div>
+			<div class="header-right">
+				<div class="header-auth">
+					<a href="login.html" class="login-btn btn">Login</a>
+				</div>
+			</div>
+		</header>
+		<main>
+			<img src="./assets/logo-transparent.png" alt="Site Logo" class="logo" />
+			<form id="login-form">
+				<h2 class="login-title">Welcome back</h2>
 
-            <h2>Login</h2>
+				<section class="form-section">
+					<label for="email">Email:</label>
+					<input type="email" id="email" name="email" required />
+				</section>
+				<section class="form-section">
+					<label for="password">Password:</label>
+					<input type="password" id="password" name="password" required />
+				</section>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <button type="submit">Login</button>
-        </form>
-    </main>
-    <script src="login_script.js"></script>
-</body>
+				<button type="submit" class="btn">Login</button>
+			</form>
+		</main>
+	</body>
 </html>

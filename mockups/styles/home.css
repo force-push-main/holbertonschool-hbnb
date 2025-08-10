@@ -1,4 +1,4 @@
-header {
+/* header {
 	position: fixed;
 	display: flex;
 	flex-direction: column;
@@ -9,7 +9,7 @@ header {
 	padding-bottom: 10px;
 	background-color: var(--primary-color);
 	z-index: 10;
-}
+} */
 
 main {
 	display: flex;
@@ -17,7 +17,6 @@ main {
 	align-items: flex-start;
 	justify-content: flex-start;
 	padding: 2rem;
-	padding-top: 180px;
 	gap: 50px;
 }
 

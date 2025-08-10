@@ -9,13 +9,14 @@ for (let i = 0; i <= endingImgId; i++) {
     imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
 }
 
+let places = []
 
 
 // ----------- POPULATION ACTIONS AND PROPERTY TILES --------
 
 // ------ place data retrieval and manipulation ------
 
-
+const propertyContainer = document.querySelector(".properties-container");
 
 const findLocation = (place) => {
     const long = place.longitude;
@@ -84,8 +85,7 @@ const addImgToTile = (tile) => {
 // ------ page population events -------
 
 const populatePageOnLoad = async () => {
-    const places = await fetchData('home_init', '/places');
-    const propertyContainer = document.querySelector(".properties-container");
+    places = await fetchData('home_init', '/places');
     propertyContainer.innerHTML = "";
     places.forEach((place) => {
         const propertyTile = createPropertyTile(place);
@@ -100,7 +100,6 @@ const populatePageOnLoad = async () => {
 populatePageOnLoad();
 
 const populatePage = (places) => {
-    const propertyContainer = document.querySelector(".properties-container");
     propertyContainer.innerHTML = "";
     places.forEach((place) => {
         const propertyTile = createPropertyTile(place);
@@ -114,8 +113,11 @@ const populatePage = (places) => {
 
 // ------------ SEARCH BAR EVENTS ----------------
 
-const searchBar = document.querySelector(".search-bar");
-const suggestedResults = document.querySelector(".suggested-results");
+const searchInput = document.querySelector(".search-input");
+const searchResults = document.querySelector(".search-results");
+const searchReset = document.querySelector('.search-reset');
+const searchIcon = document.querySelector('.search-icon');
+const searchClearIcon = document.querySelector('.search-clear');
 
 // ----- search by country ------
 
@@ -139,10 +141,10 @@ const findWaterFrontProps = (places) => {
 };
 
 const handleSearch = async () => {
-    const searchedCountry = cBB[searchBar.value.toLowerCase()];
+    const searchedCountry = cBB[searchInput.value.toLowerCase()];
     const allPlaces = await fetchData('home_search', '/places');
     let filteredResults;
-    if (searchBar.value.toLowerCase() == "waterfront views") {
+    if (searchInput.value.toLowerCase() == "waterfront views") {
         filteredResults = findWaterFrontProps(allPlaces);
     } else {
         filteredResults = allPlaces.filter(
@@ -153,7 +155,7 @@ const handleSearch = async () => {
                 place["longitude"] < searchedCountry[3]
         );
     }
-    suggestedResults.innerHTML = "";
+    searchResults.innerHTML = "";
     if (filteredResults.length > 0) {
         populatePage(filteredResults);
     } else {
@@ -165,34 +167,52 @@ const handleSearch = async () => {
     }
 };
 
-searchBar.addEventListener("search", handleSearch);
+searchInput.addEventListener("search", handleSearch);
 
 // ----- auto-complete ----
 
 const handleAutoComplete = () => {
-    suggestedResults.innerHTML = "";
-    if (searchBar.value.length > 2) {
-        const countries = Object.keys(cBB).filter((value) => {
-            return value.includes(searchBar.value.toLowerCase());
-        });
-        if (countries.length > 0) {
-            const ul = document.createElement("ul");
-            countries.forEach((country) => {
-                const li = document.createElement("li");
-                li.textContent = toTitleCase(country);
-                li.addEventListener("click", () => {
-                    searchBar.value = li.textContent;
-                    suggestedResults.innerHTML = "";
-                    handleSearch();
-                });
-                ul.appendChild(li);
-            });
-            suggestedResults.appendChild(ul);
-        }
+    searchResults.innerHTML = "";
+
+    if (searchInput.value.length < 2) {
+        searchIcon.style.display = 'block';
+        searchClearIcon.style.display = 'none';
+        return;
     }
+
+    searchIcon.style.display = 'none'
+    searchClearIcon.style.display = 'block'
+    
+    const countries = Object.keys(cBB).filter((value) => {
+        return value.includes(searchInput.value.toLowerCase());
+    });
+    if (!countries.length) return;
+
+    const ul = document.createElement("ul");
+    countries.forEach((country) => {
+        const li = document.createElement("li");
+        li.textContent = toTitleCase(country);
+        li.addEventListener("click", () => {
+            searchInput.value = li.textContent;
+            searchResults.innerHTML = "";
+            handleSearch();
+        });
+        ul.appendChild(li);
+    });
+    searchResults.appendChild(ul);
 };
 
-searchBar.addEventListener("input", handleAutoComplete);
+searchInput.addEventListener("input", handleAutoComplete);
+
+// ----- reset -----
+
+searchReset.addEventListener('click', () => {
+    searchInput.value = ''
+    searchIcon.style.display = 'block';
+    searchClearIcon.style.display = 'none'
+    searchResults.innerHTML = '';
+    populatePage(places)
+})
 
 // ---------- FILTERS ------------
 
@@ -248,8 +268,7 @@ const sortByPriceHelper = (order) => {
     properties.sort((a, b) =>
         order == "desc" ? b.price - a.price : a.price - b.price
     );
-    const container = document.querySelector(".properties-container");
-    properties.forEach((property) => container.appendChild(property.element));
+    properties.forEach((property) => propertyContainer.appendChild(property.element));
 };
 
 const handleSortByPrice = () => {

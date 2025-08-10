@@ -1,4 +1,4 @@
-import { API_URL, MAX_AGE_MS } from './constants.js';
+import { API_URL, MAX_AGE_MS, TOKEN } from './constants.js';
 
 let results = {};
 
@@ -12,8 +12,9 @@ export const fetchData = async (page, url) => {
 	const result = results[page];
 
 	if (!result?.lastFetchTime || Date.now() - result.lastFetchTime > MAX_AGE_MS) {
-		const path = url.startsWith('/') ? url : '/' + url;
-		const token = localStorage.getItem('access_token');
+		let path = url.startsWith('/') ? url : '/' + url;
+
+		const token = localStorage.getItem(TOKEN);
 		const headers = new Headers();
 
 		if (token) headers.append('Authorization', `Bearer ${token}`);

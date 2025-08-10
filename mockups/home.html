@@ -7,26 +7,66 @@
 		<link rel="stylesheet" href="./styles/normalize.css" />
 		<link rel="stylesheet" href="./styles/app.css" />
 		<link rel="stylesheet" href="./styles/home.css" />
-		<script src="./scripts/home.js" type="module" defer></script>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
 			rel="stylesheet"
 		/>
+		<script src="./scripts/home.js" type="module" defer></script>
+		<script src="./scripts/app.js" type="module" defer></script>
 	</head>
 
 	<body>
-		<header>
-			<div class="logo">
-				<a href="home.html">
-					<img src="./assets/logo-transparent.png" width="100px" height="100px" alt="HBnB logo" />
+		<header class="header">
+			<div class="header-left">
+				<a href="home.html" class="header-logo">
+					<img src="./assets/logo-transparent.png" alt="HBnB logo" />
 				</a>
 			</div>
-			<section class="search-bar-container">
-				<input class="search-bar" type="search" placeholder="search for properties" />
-				<div class="suggested-results"></div>
-			</section>
+			<div class="header-middle">
+				<div class="search-bar">
+					<button type="button" class="search-reset">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="search-icon"
+						>
+							<path d="m21 21-4.34-4.34" />
+							<circle cx="11" cy="11" r="8" />
+						</svg>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="search-clear"
+						>
+							<path d="M18 6 6 18" />
+							<path d="m6 6 12 12" />
+						</svg>
+					</button>
+					<input type="text" class="search-input" placeholder="Search for properties" />
+				</div>
+				<div class="search-results hidden"></div>
+			</div>
+			<div class="header-right">
+				<div class="header-auth">
+					<a href="login.html" class="login-btn btn">Login</a>
+				</div>
+			</div>
 		</header>
 		<main>
 			<div class="filter-property-container">
