@@ -79,6 +79,13 @@ h3 {
 		height: 86px;
 	}
 }
+
+.catchphrase p {
+	font-size: 0.6rem;
+	text-align: center;
+	width: 86px;
+}
+
 .header-right {
 	display: flex;
 	justify-content: flex-end;
