@@ -23,7 +23,10 @@ class ReviewList(Resource):
             review_data = api.payload
             review_data['author_id'] = current_user['id']
             new_review = facade.create_review(review_data)
-            return new_review, 201
+            return {
+                **new_review,
+                'author': facade.get_user(new_review['author_id'])
+            }, 201
         except Exception as e:
             return {'error': f"{e}"}, 400
 

@@ -31,6 +31,11 @@ async function loginUser(email, password) {
 	if (response.ok) {
 		//store JWT securely in localStorage
 		localStorage.setItem(TOKEN, data.access_token);
+		const redirect = new URL(window.location.href).searchParams.get('redirect');
+		if (redirect) {
+			window.location = redirect;
+			return;
+		}
 
 		window.location.href = 'home.html';
 	} else {

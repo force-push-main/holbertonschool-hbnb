@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="./styles/app.css" />
 		<link rel="stylesheet" href="./styles/place.css" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
+		<script src="./scripts/app.js" type="module" defer></script>
 		<script src="./scripts/place.js" type="module" defer></script>
 		<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -62,19 +63,24 @@
 					</section>
 					<section class="place-section">
 						<h4 class="place-sub-title">Leave a review</h4>
-						<form action="" class="review-form">
-							<textarea class="review-input"></textarea>
+						<form class="review-form">
+							<textarea class="review-input" required name="text"></textarea>
 							<div class="review-footer">
 								<div class="review-ratings">
-									<button type="button" class="review-rating">1</button>
-									<button type="button" class="review-rating">2</button>
-									<button type="button" class="review-rating">3</button>
-									<button type="button" class="review-rating">4</button>
-									<button type="button" class="review-rating">5</button>
+									<button type="button" class="review-form-rating">1</button>
+									<button type="button" class="review-form-rating">2</button>
+									<button type="button" class="review-form-rating">3</button>
+									<button type="button" class="review-form-rating">4</button>
+									<button type="button" class="review-form-rating">5</button>
 								</div>
+								<input hidden type="number" name="rating" class="review-final-rating" min="1" max="5" />
 								<button type="submit" class="btn">Submit</button>
 							</div>
 						</form>
+					</section>
+					<section class="place-reviews">
+						<h4 class="place-sub-title">What others have to say</h4>
+						<div class="reviews"></div>
 					</section>
 				</main>
 				<aside class="place-sidebar">

@@ -57,12 +57,25 @@ class PlaceResource(Resource):
             place = facade.get_place(place_id)
             if not place:
                 return {"error": "Place not found"}, 404
+            
+            getReviews = facade.get_reviews_by_place(place['id'])
+            reviews = []
+
+            for review in getReviews:
+                review_author = facade.get_user(review['author_id'])
+                reviews.append({
+                    'id': review['id'],
+                    'text': review['text'],
+                    'rating': review['rating'],
+                    'author': review_author
+                })
 
             user = facade.get_user(place['owner_id'])
 
             return {
                 **place,
-                'user': user
+                'user': user,
+                'reviews': reviews
             }, 200
         except Exception as e:
             return {'error': f'{e}'}, 404
