@@ -19,7 +19,7 @@ jwt = JWTManager()
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
     app.url_map.strict_slashes = False
-    CORS(app)
+    CORS(app, origins='*')
     app.config.from_object(config_class)
     api = Api(app, version='1.0', title='HBnB API', description='HBnB Application API', doc='/api/v1/')
     db.init_app(app)

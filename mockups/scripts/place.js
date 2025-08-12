@@ -20,8 +20,6 @@ const onPageLoad = async () => {
 	const place_id = new URL(window.location.href).searchParams.get('place_id');
 	const data = await fetchData(place_id, `/places/${place_id}`);
 
-	console.log(data);
-
 	const images = getImages(5);
 
 	price = toFixed(data.price * nights);

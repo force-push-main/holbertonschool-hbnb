@@ -141,3 +141,10 @@ h3 {
 		}
 	}
 }
+
+.dropdown {
+	border: 1px solid black;
+	text-align: center;
+	border-radius: 4px;
+	padding: 8px 20px;
+}

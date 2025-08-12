@@ -22,7 +22,6 @@ export const fetchData = async (page, url) => {
 		const res = await fetch(API_URL + path, {
 			headers
 		});
-
 		if (!res.ok) {
 			throw new Error(`An error occured with status code: ${res.status}`);
 		}

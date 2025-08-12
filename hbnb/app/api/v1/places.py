@@ -46,8 +46,11 @@ class PlaceList(Resource):
 
     def get(self):
         """Retrieve a list of all places"""
-        places = facade.get_all_places()
-        return places
+        try:
+            places = facade.get_all_places()
+            return places
+        except Exception as e:
+            return {"error": f'{e}'}, 400
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):

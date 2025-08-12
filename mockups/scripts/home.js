@@ -1,60 +1,56 @@
 import cBB from "../assets/country_bounding_boxes.json" with {type: 'json'};
-import { fetchData } from './fetch.js'
-import { toTitleCase } from './utils.js'
+import { fetchData } from './fetch.js';
+import { toTitleCase } from './utils.js';
+
+// html elements
+const searchInput = document.querySelector('.search-input');
+const searchResults = document.querySelector('.search-results');
+const priceSlider = document.querySelector('.price-range-slider');
+const confirmPriceRangeBtn = document.querySelector('.price-range-confirm-btn');
+const sortByPriceSelector = document.querySelector('.order-by-price-input');
 
 const imgPaths = [];
 const startingImgId = 0;
 const endingImgId = 18;
 for (let i = 0; i <= endingImgId; i++) {
-    imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
+	imgPaths.push(`./assets/hbnb-demo-imgs/demo-img-${i}.jpg`);
 }
-
-let places = []
-
 
 // ----------- POPULATION ACTIONS AND PROPERTY TILES --------
 
 // ------ place data retrieval and manipulation ------
 
-const propertyContainer = document.querySelector(".properties-container");
-
 const findLocation = (place) => {
-    const long = place.longitude;
-    const lat = place.latitude;
-    let location = Object.keys(cBB).find(
-        (key) =>
-            lat > cBB[key][0] &&
-            lat < cBB[key][2] &&
-            long > cBB[key][1] &&
-            long < cBB[key][3]
-    );
-    if (typeof location == "undefined") {
-        location = "Waterfront views";
-    }
-    return toTitleCase(location);
+	const long = place.longitude;
+	const lat = place.latitude;
+	let location = Object.keys(cBB).find(
+		(key) => lat > cBB[key][0] && lat < cBB[key][2] && long > cBB[key][1] && long < cBB[key][3]
+	);
+	if (typeof location == 'undefined') {
+		location = 'Waterfront views';
+	}
+	return toTitleCase(location);
 };
 
 const getRndImgs = () => {
-    const srcArr = [];
-    const currImgs = [];
-    while (srcArr.length < 3) {
-        const rndIndex = Math.floor(
-            Math.random() * (endingImgId - startingImgId + 1) + startingImgId
-        );
-        if (!currImgs.includes(rndIndex)) {
-            srcArr.push(imgPaths[rndIndex]);
-            currImgs.push(rndIndex);
-        }
-    }
-    return srcArr;
+	const srcArr = [];
+	const currImgs = [];
+	while (srcArr.length < 3) {
+		const rndIndex = Math.floor(Math.random() * (endingImgId - startingImgId + 1) + startingImgId);
+		if (!currImgs.includes(rndIndex)) {
+			srcArr.push(imgPaths[rndIndex]);
+			currImgs.push(rndIndex);
+		}
+	}
+	return srcArr;
 };
 
 // ------- property tile creation -----------
 
 const createPropertyTile = (place) => {
-    const div = document.createElement("div");
-    div.classList.add("property");
-    div.innerHTML = `
+	const div = document.createElement('div');
+	div.classList.add('property');
+	div.innerHTML = `
     <a href="./place.html?place_id=${place.id}">
         <div class="property-image">
         <div class="loading-dot-container">
@@ -67,221 +63,174 @@ const createPropertyTile = (place) => {
         <p><strong>${toTitleCase(place.title)}</strong></p>
         <p class="price">$${place.price}/night – ${findLocation(place)}</p>
         </div>
-        </a>`
-    return div;
+        </a>`;
+	return div;
 };
 
 const addImgToTile = (tile) => {
-    const imgArr = getRndImgs();
-    const img = new Image(300, 300);
-    img.src = imgArr[0];
-    img.onload = () => {
-        const imgContainer = tile.querySelector(".property-image");
-        imgContainer.innerHTML = "";
-        imgContainer.appendChild(img);
-    };
+	const imgArr = getRndImgs();
+	const img = new Image(300, 300);
+	img.src = imgArr[0];
+	img.onload = () => {
+		const imgContainer = tile.querySelector('.property-image');
+		imgContainer.innerHTML = '';
+		imgContainer.appendChild(img);
+	};
 };
 
 // ------ page population events -------
 
 const populatePageOnLoad = async () => {
-    places = await fetchData('home_init', '/places');
-    propertyContainer.innerHTML = "";
-    places.forEach((place) => {
-        const propertyTile = createPropertyTile(place);
-        propertyContainer.appendChild(propertyTile);
-    });
-    const propertyTiles = document.querySelectorAll(".property");
-    propertyTiles.forEach((tile) => {
-        addImgToTile(tile);
-    });
+	const places = await fetchData('home_init', '/places');
+	const propertyContainer = document.querySelector('.properties-container');
+	propertyContainer.innerHTML = '';
+	places.forEach((place) => {
+		const propertyTile = createPropertyTile(place);
+		propertyContainer.appendChild(propertyTile);
+	});
+	const propertyTiles = document.querySelectorAll('.property');
+	propertyTiles.forEach((tile) => {
+		addImgToTile(tile);
+	});
 };
 
 populatePageOnLoad();
 
 const populatePage = (places) => {
-    propertyContainer.innerHTML = "";
-    places.forEach((place) => {
-        const propertyTile = createPropertyTile(place);
-        propertyContainer.appendChild(propertyTile);
-    });
-    const propertyTiles = document.querySelectorAll(".property");
-    propertyTiles.forEach((tile) => {
-        addImgToTile(tile);
-    });
+	const propertyContainer = document.querySelector('.properties-container');
+	propertyContainer.innerHTML = '';
+	places.forEach((place) => {
+		const propertyTile = createPropertyTile(place);
+		propertyContainer.appendChild(propertyTile);
+	});
+	const propertyTiles = document.querySelectorAll('.property');
+	propertyTiles.forEach((tile) => {
+		addImgToTile(tile);
+	});
 };
 
 // ------------ SEARCH BAR EVENTS ----------------
 
-const searchInput = document.querySelector(".search-input");
-const searchResults = document.querySelector(".search-results");
-const searchReset = document.querySelector('.search-reset');
-const searchIcon = document.querySelector('.search-icon');
-const searchClearIcon = document.querySelector('.search-clear');
-
 // ----- search by country ------
 
 const findWaterFrontProps = (places) => {
-    let waterfront = [];
-    places.forEach((place) => {
-        const long = place.longitude;
-        const lat = place.latitude;
-        let location = Object.keys(cBB).find(
-            (key) =>
-                lat > cBB[key][0] &&
-                lat < cBB[key][2] &&
-                long > cBB[key][1] &&
-                long < cBB[key][3]
-        );
-        if (typeof location == "undefined") {
-            waterfront.push(place);
-        }
-    });
-    return waterfront;
+	let waterfront = [];
+	places.forEach((place) => {
+		const long = place.longitude;
+		const lat = place.latitude;
+		let location = Object.keys(cBB).find(
+			(key) => lat > cBB[key][0] && lat < cBB[key][2] && long > cBB[key][1] && long < cBB[key][3]
+		);
+		if (typeof location == 'undefined') {
+			waterfront.push(place);
+		}
+	});
+	return waterfront;
 };
 
 const handleSearch = async () => {
-    const searchedCountry = cBB[searchInput.value.toLowerCase()];
-    const allPlaces = await fetchData('home_search', '/places');
-    let filteredResults;
-    if (searchInput.value.toLowerCase() == "waterfront views") {
-        filteredResults = findWaterFrontProps(allPlaces);
-    } else {
-        filteredResults = allPlaces.filter(
-            (place) =>
-                place["latitude"] > searchedCountry[0] &&
-                place["latitude"] < searchedCountry[2] &&
-                place["longitude"] > searchedCountry[1] &&
-                place["longitude"] < searchedCountry[3]
-        );
-    }
-    searchResults.innerHTML = "";
-    if (filteredResults.length > 0) {
-        populatePage(filteredResults);
-    } else {
-        const propertyContainer = document.querySelector(
-            ".properties-container"
-        );
-        propertyContainer.innerHTML =
-            "<h2>There are no results for that country</h2>";
-    }
+	const searchedCountry = cBB[searchInput.value.toLowerCase()];
+	const allPlaces = await fetchData('home_search', '/places');
+	let filteredResults;
+	if (searchInput.value.toLowerCase() == 'waterfront views') {
+		filteredResults = findWaterFrontProps(allPlaces);
+	} else {
+		filteredResults = allPlaces.filter(
+			(place) =>
+				place['latitude'] > searchedCountry[0] &&
+				place['latitude'] < searchedCountry[2] &&
+				place['longitude'] > searchedCountry[1] &&
+				place['longitude'] < searchedCountry[3]
+		);
+	}
+	searchResults.innerHTML = '';
+	if (filteredResults.length > 0) {
+		populatePage(filteredResults);
+	} else {
+		const propertyContainer = document.querySelector('.properties-container');
+		propertyContainer.innerHTML = '<h2 class="no-results-header">There are no results for that country</h2>';
+	}
 };
 
-searchInput.addEventListener("search", handleSearch);
+searchInput.addEventListener('search', handleSearch);
 
 // ----- auto-complete ----
 
 const handleAutoComplete = () => {
-    searchResults.innerHTML = "";
-
-    if (searchInput.value.length < 2) {
-        searchIcon.style.display = 'block';
-        searchClearIcon.style.display = 'none';
-        return;
-    }
-
-    searchIcon.style.display = 'none'
-    searchClearIcon.style.display = 'block'
-    
-    const countries = Object.keys(cBB).filter((value) => {
-        return value.includes(searchInput.value.toLowerCase());
-    });
-    if (!countries.length) return;
-
-    const ul = document.createElement("ul");
-    countries.forEach((country) => {
-        const li = document.createElement("li");
-        li.textContent = toTitleCase(country);
-        li.addEventListener("click", () => {
-            searchInput.value = li.textContent;
-            searchResults.innerHTML = "";
-            handleSearch();
-        });
-        ul.appendChild(li);
-    });
-    searchResults.appendChild(ul);
+	searchResults.innerHTML = '';
+	if (searchInput.value.length > 2) {
+		const countries = Object.keys(cBB).filter((value) => {
+			return value.includes(searchInput.value.toLowerCase());
+		});
+		if (countries.length > 0) {
+			const ul = document.createElement('ul');
+			countries.forEach((country) => {
+				const li = document.createElement('li');
+				li.textContent = toTitleCase(country);
+				li.addEventListener('click', () => {
+					searchInput.value = li.textContent;
+					searchResults.innerHTML = '';
+					handleSearch();
+				});
+				ul.appendChild(li);
+			});
+			searchResults.appendChild(ul);
+		}
+	}
 };
 
-searchInput.addEventListener("input", handleAutoComplete);
-
-// ----- reset -----
-
-searchReset.addEventListener('click', () => {
-    searchInput.value = ''
-    searchIcon.style.display = 'block';
-    searchClearIcon.style.display = 'none'
-    searchResults.innerHTML = '';
-    populatePage(places)
-})
+searchInput.addEventListener('input', handleAutoComplete);
 
 // ---------- FILTERS ------------
 
 // ----- price slider -----
 
-const priceSlider = document.querySelector(".price-range-slider");
-
 const handlePriceSlider = () => {
-    const priceSelection = document.querySelector(".price-range-selection");
-    const priceValue = priceSlider.value;
-    if (priceValue == 125) {
-        priceSelection.textContent = "Any";
-    } else {
-        priceSelection.textContent = `$${priceValue}`;
-    }
+	const priceSelection = document.querySelector('.price-range-selection');
+	const priceValue = priceSlider.value;
+	if (priceValue == 125) {
+		priceSelection.textContent = 'Any';
+	} else {
+		priceSelection.textContent = `$${priceValue}`;
+	}
 };
 
-priceSlider.addEventListener("input", handlePriceSlider);
+priceSlider.addEventListener('input', handlePriceSlider);
 
 // ----- confirm price range -----
 
-const confirmPriceRangeBtn = document.querySelector(".price-range-confirm-btn");
-
 const handlePriceRange = () => {
-    const maxPrice =
-        parseInt(priceSlider.value) < 125
-            ? parseInt(priceSlider.value)
-            : Infinity;
-    const properties = document.querySelectorAll(".property");
-    properties.forEach((property) => {
-        const price = parseFloat(
-            property.querySelector(".price").textContent.replace(/[$,]/g, "")
-        );
-        property.style.display = price <= maxPrice ? "flex" : "none";
-    });
+	const maxPrice = parseInt(priceSlider.value) < 125 ? parseInt(priceSlider.value) : Infinity;
+	const properties = document.querySelectorAll('.property');
+	properties.forEach((property) => {
+		const price = parseFloat(property.querySelector('.price').textContent.replace(/[$,]/g, ''));
+		property.style.display = price <= maxPrice ? 'flex' : 'none';
+	});
 };
 
-confirmPriceRangeBtn.addEventListener("click", handlePriceRange);
+confirmPriceRangeBtn.addEventListener('click', handlePriceRange);
 
 // ----- sort by price -----
 
-const sortByPriceSelector = document.querySelector(".order-by-price-input");
-
 const sortByPriceHelper = (order) => {
-    const properties = Array.from(document.querySelectorAll(".property")).map(
-        (el) => ({
-            element: el,
-            price: parseFloat(
-                el.querySelector(".price").textContent.replace(/[$,]/g, "")
-            ),
-        })
-    );
-    properties.sort((a, b) =>
-        order == "desc" ? b.price - a.price : a.price - b.price
-    );
-    properties.forEach((property) => propertyContainer.appendChild(property.element));
+	const properties = Array.from(document.querySelectorAll('.property')).map((el) => ({
+		element: el,
+		price: parseFloat(el.querySelector('.price').textContent.replace(/[$,]/g, ''))
+	}));
+	properties.sort((a, b) => (order == 'desc' ? b.price - a.price : a.price - b.price));
+	const container = document.querySelector('.properties-container');
+	properties.forEach((property) => container.appendChild(property.element));
 };
 
 const handleSortByPrice = () => {
-    const value = sortByPriceSelector.value;
-    if (value === "low-to-high") {
-        sortByPriceHelper("asc");
-    } else {
-        sortByPriceHelper("desc");
-    }
+	const value = sortByPriceSelector.value;
+	if (value === 'low-to-high') {
+		sortByPriceHelper('asc');
+	} else {
+		sortByPriceHelper('desc');
+	}
 };
 
-sortByPriceSelector.addEventListener("input", handleSortByPrice);
-
-
+sortByPriceSelector.addEventListener('input', handleSortByPrice);
 
 // ------------ PAGINATION ---------------
