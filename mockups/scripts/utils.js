@@ -1,3 +1,5 @@
+import { TOKEN } from './constants.js';
+
 /**
  * Gets a random set of images from the `asset` folder.
  * @param {number} imgCount The number of images to get
@@ -33,4 +35,25 @@ export const toTitleCase = (str) => {
  */
 export const toFixed = (num) => {
 	return (typeof num === 'number' ? num : parseInt(num)).toFixed(2);
+};
+
+export const getJWT = () => {
+	const token = localStorage.getItem(TOKEN);
+
+	const payloadBase64url = token.split('.')[1];
+
+	const decodedPayload = atob(
+		payloadBase64url.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((payloadBase64url.length * 4) % 3)
+	);
+
+	return JSON.parse(decodedPayload);
+};
+
+export const isJwtExpired = () => {
+	const token = localStorage.getItem(TOKEN);
+	if (!token) return true;
+
+	const data = getJWT();
+
+	return data.exp < Date.now() / 1000;
 };

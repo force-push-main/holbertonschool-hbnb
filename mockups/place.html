@@ -1,106 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>HBnB – Book a stay</title>
+		<link rel="icon" type="image/x-icon" href="./assets/favicon/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/mockups/assets/favicon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/mockups/assets/favicon/favicon-16x16.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/mockups/assets/favicon/apple-touch-icon.png" />
+		<link rel="stylesheet" href="./styles/normalize.css" />
+		<link rel="stylesheet" href="./styles/app.css" />
+		<link rel="stylesheet" href="./styles/place.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
+		<script src="./scripts/place.js" type="module" defer></script>
+		<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>HBnB – Book a stay</title>
-	<link rel="icon" type="image/x-icon" href="./assets/favicon/favicon.ico">
-	<link rel="icon" type="image/png" sizes="32x32" href="/mockups/assets/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/mockups/assets/favicon/favicon-16x16.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="/mockups/assets/favicon/apple-touch-icon.png">
-	<link rel="stylesheet" href="./styles/normalize.css" />
-	<link rel="stylesheet" href="./styles/app.css" />
-	<link rel="stylesheet" href="./styles/place.css" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
-	<script src="./scripts/place.js" type="module" defer></script>
-	<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-		rel="stylesheet" />
-</head>
-
-<body>
-	<header class="header">
-		<div class="header-left">
-			<a href="home.html" class="header-logo">
-				<img src="./assets/logo-transparent.png" alt="HBnB logo" />
-			</a>
-			<div class="slogan">
-				<p>Hot stays,</p>
-				<p>gone in days</p>
+	<body>
+		<header class="header">
+			<div class="header-left">
+				<a href="home.html" class="header-logo">
+					<img src="./assets/logo-transparent.png" alt="HBnB logo" />
+				</a>
+				<div class="slogan">
+					<p>Hot stays,</p>
+					<p>gone in days</p>
+				</div>
 			</div>
-		</div>
-		<div class="header-middle"></div>
-		<div class="header-right">
-			<div class="header-auth">
-				<a href="login.html" class="login-btn btn">Login</a>
+			<div class="header-middle"></div>
+			<div class="header-right">
+				<div class="header-auth">
+					<a href="login.html" class="login-btn btn">Login</a>
+				</div>
 			</div>
-		</div>
-	</header>
-	<div class="container">
-		<header class="place-header">
-			<h1 class="place-title"></h1>
 		</header>
-		<section class="splide" aria-label="Property images">
-			<div class="splide__track">
-				<ul class="splide__list"></ul>
-			</div>
-		</section>
-		<div class="place-container">
-			<main>
-				<section class="place-section">
-					<div class="place-owner">
-						<img src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg" alt="Property owner"
-							class="owner-avatar" />
-						<p class="owner-name"></p>
-					</div>
-				</section>
-				<section class="place-section">
-					<h4 class="place-sub-title">About this property</h4>
-					<p class="place-description"></p>
-				</section>
-				<section class="place-section">
-					<h4 class="place-sub-title">What this property offers</h4>
-					<ul class="place-amenities"></ul>
-				</section>
-				<section class="place-section">
-					<h4 class="place-sub-title">Leave a review</h4>
-					<form action="" class="review-form">
-						<textarea class="review-input"></textarea>
-						<div class="review-footer">
-							<div class="review-ratings">
-								<button type="button" class="review-rating">1</button>
-								<button type="button" class="review-rating">2</button>
-								<button type="button" class="review-rating">3</button>
-								<button type="button" class="review-rating">4</button>
-								<button type="button" class="review-rating">5</button>
-							</div>
-							<button type="submit" class="btn">Submit</button>
+		<div class="container">
+			<header class="place-header">
+				<h1 class="place-title"></h1>
+			</header>
+			<section class="splide" aria-label="Property images">
+				<div class="splide__track">
+					<ul class="splide__list"></ul>
+				</div>
+			</section>
+			<div class="place-container">
+				<main>
+					<section class="place-section">
+						<div class="place-owner">
+							<img
+								src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+								alt="Property owner"
+								class="owner-avatar"
+							/>
+							<p class="owner-name"></p>
 						</div>
-					</form>
-				</section>
-			</main>
-			<aside class="place-sidebar">
-				<div class="place-price">
-					<span></span>
-					<small>per night</small>
-				</div>
-				<div class="place-nights">
-					<button class="place-night selected">1</button>
-					<button class="place-night">2</button>
-					<button class="place-night">3</button>
-				</div>
-				<div class="place-total">
-					<small>Total</small>
-					<span></span>
-				</div>
-				<button class="place-reserve btn">Reserve</button>
-			</aside>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">About this property</h4>
+						<p class="place-description"></p>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">What this property offers</h4>
+						<ul class="place-amenities"></ul>
+					</section>
+					<section class="place-section">
+						<h4 class="place-sub-title">Leave a review</h4>
+						<form class="review-form">
+							<textarea class="review-input" required name="text"></textarea>
+							<div class="review-footer">
+								<div class="review-ratings">
+									<button type="button" class="review-form-rating">1</button>
+									<button type="button" class="review-form-rating">2</button>
+									<button type="button" class="review-form-rating">3</button>
+									<button type="button" class="review-form-rating">4</button>
+									<button type="button" class="review-form-rating">5</button>
+								</div>
+								<input hidden type="number" name="rating" class="review-final-rating" min="1" max="5" />
+								<button type="submit" class="btn">Submit</button>
+							</div>
+						</form>
+					</section>
+					<section class="place-reviews">
+						<h4 class="place-sub-title">What others have to say</h4>
+						<div class="reviews"></div>
+					</section>
+				</main>
+				<aside class="place-sidebar">
+					<div class="place-price">
+						<span></span>
+						<small>per night</small>
+					</div>
+					<div class="place-nights">
+						<button class="place-night selected">1</button>
+						<button class="place-night">2</button>
+						<button class="place-night">3</button>
+					</div>
+					<div class="place-total">
+						<small>Total</small>
+						<span></span>
+					</div>
+					<button class="place-reserve btn">Reserve</button>
+				</aside>
+			</div>
 		</div>
-	</div>
-</body>
-
+	</body>
 </html>
